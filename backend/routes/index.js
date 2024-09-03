@@ -16,4 +16,10 @@ router.get("/api/csrf/restore", (req, res) => {
     });
 });
 
+//connect api router
+const apiRouter = require('./api');
+
+router.use('/api', apiRouter);
+
+
 module.exports = router;
