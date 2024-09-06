@@ -14,5 +14,5 @@ router.post('/test', function(req, res) {
   // If current user session is not valid, set req.user to null
 router.use(restoreUser);
 
-
+//adding a comment for fun
 module.exports = router;
