@@ -47,6 +47,7 @@ router.delete('/', (_req, res) => {
     return res.json({message: 'success'});
 });
 
+//Get Session User API Route
 router.get('/', (req, res) => {
     const { user } = req;
     if (user) {
