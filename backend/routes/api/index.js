@@ -21,5 +21,4 @@ router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
 
-//adding a comment for fun
 module.exports = router;
