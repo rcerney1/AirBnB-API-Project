@@ -6,7 +6,7 @@ const { User } = require('../../db/models');
 
 const router = express.Router();
 
-//Sign up post endpoint
+//User Signup API Route
 router.post('/', async (req, res) => {
     const { email, password, username } = req.body;
     const hashedPassword = bcrypt.hashSync(password);
