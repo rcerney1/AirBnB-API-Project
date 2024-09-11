@@ -4,10 +4,7 @@ const { Sequelize } = require('sequelize');
 const { SpotImage, Spot, User, Review, ReviewImage, sequelize } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
-
-//middleware to validate reviews //! DONT FORGET TO DO THIS BABY GIRLLLLLLLLLL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-const validateReviews = [];
+const { handleValidationErrors, validateReview } = require('../../utils/validation');
 
 //get all reviews for current user
 router.get('/current', requireAuth, async (req, res) => {
@@ -69,6 +66,11 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
         where: { reviewId }
     });
 
+    //check if review belongs to current user
+    if(review.userId !== req.user.id) {
+        return res.status(403).json({message: "Review must belong to current user"})
+    }
+
     if (reviewImageCount.length >= 10) {
         return res.status(403).json("Maximum number of images for this resource was reached")
     };
@@ -86,7 +88,50 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 });
 
 //Edit a Review
-// router.put();
+router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
+    const { reviewId } = req.params;
+    const { review, stars } = req.body;
+    const existingReview= await Review.findByPk(reviewId);
+
+    //check if review exists
+    if(!existingReview) {
+        res.status(404).json({message: "Review couldn't be found"});
+    }
+
+     //check if review belongs to current user
+     if(existingReview.userId !== req.user.id) {
+        return res.status(403).json({message: "Review must belong to current user"})
+    }
+
+    //edit review
+    const updatedReview = await existingReview.update({
+        review, 
+        stars
+    });
+
+    return res.json(updatedReview)
+});
+
+//Delete a Review
+router.delete('/:reviewId', requireAuth, async (req, res) => {
+    const { reviewId } = req.params;
+
+    //check to see if review exists
+    const review = await Review.findByPk(reviewId);
+    if(!review) {
+        return res.status(404).json({message: "Review couldn't be found"});
+    };
+
+    //check if review belongs to current user
+    if(review.userId !== req.user.id) {
+        return res.status(403).json({message: "Review must belong to current user"})
+    }
+
+    await review.destroy();
+    return res.json({
+        message: "Successfully deleted"
+    })
+})
 
 
 
