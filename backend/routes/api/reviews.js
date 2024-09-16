@@ -2,7 +2,7 @@ const express = require('express');
 const router = require('express').Router();
 const { Sequelize } = require('sequelize');
 const { SpotImage, Spot, User, Review, ReviewImage, sequelize } = require('../../db/models');
-const { requireAuth } = require('../../utils/auth');
+const { requireAuth, requireReviewOwner } = require('../../utils/auth');
 const { check } = require('express-validator');
 const { handleValidationErrors, validateReview } = require('../../utils/validation');
 
@@ -51,25 +51,14 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 //Add an Image to a Review based on the Review's id
-router.post('/:reviewId/images', requireAuth, async (req, res) => {
+router.post('/:reviewId/images', requireAuth, requireReviewOwner, async (req, res) => {
     const { reviewId } = req.params;
     const { url } = req.body;
-
-    //check if review exists
-    const review = await Review.findByPk(reviewId);
-    if(!review) {
-        return res.status(404).json({message: "Review couldn't be found"})
-    }
 
     //check if review image limit has been reached
     const reviewImageCount = await ReviewImage.findAll({
         where: { reviewId }
     });
-
-    //check if review belongs to current user
-    if(review.userId !== req.user.id) {
-        return res.status(403).json({message: "Review must belong to current user"})
-    }
 
     if (reviewImageCount.length >= 10) {
         return res.status(403).json("Maximum number of images for this resource was reached")
