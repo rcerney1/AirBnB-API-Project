@@ -1,6 +1,6 @@
 const { validationResult, check } = require('express-validator');
 const { Op } = require('sequelize')
-const {Booking} = require('../db/models');
+const { Booking } = require('../db/models');
 
 // middleware for formatting errors from express-validator middleware
 // (to customize, see express-validator's documentation)
@@ -87,9 +87,15 @@ const validateSpot = [
 
 //bookingConflicts middleWare
 const bookingConflicts = async (req, res, next) => {
-  const { spotId } = req.params;
+  let spotId = req.params.spotId || req.body.spotId;
   const { startDate, endDate } = req.body;
-  const userId = req.user.id;
+  
+
+  if (!spotId) {
+    const { bookingId } = req.params;
+    const book = await Booking.findByPk(bookingId);
+    spotId = book.spotId;
+  }
 
   // Check for conflicting bookings
   const conflictingBooking = await Booking.findOne({

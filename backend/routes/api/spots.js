@@ -1,8 +1,8 @@
 const express = require('express');
-const { Op } = require('sequelize')
+const { Op, json } = require('sequelize')
 const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
 const { requireAuth, requireSpotOwner, requireReviewOwner } = require('../../utils/auth');
-const { validateReview, validateSpot, validateBooking, bookingConflicts } = require('../../utils/validation');
+const { validateReview, validateSpot,  bookingConflicts } = require('../../utils/validation');
 // const { process_params } = require('express/lib/router');
 const router = express.Router();
 
@@ -321,7 +321,64 @@ router.get('/:spotId/reviews', async (req, res) => {
 })
 
 //Get all Bookings for a Spot based on the Spot's id
+router.get('/:spotId/bookings', requireAuth, async (req, res) => {
+    const { spotId } = req.params;
+    const userId = req.user.id;
 
+    //check if spot exists
+    const spot = await Spot.findByPk(spotId);
+
+    if(!spot) {
+        return res.status(404).json({ message: "Spot couldn't be found"});
+    }
+
+    //get all bookings for spot
+    const bookings = await Booking.findAll({
+        where: { spotId },
+        include: {
+            model: User,
+            attributes: ['id', 'firstName', 'lastName'],
+            as: 'user'
+        },
+        attributes: [
+            'id',
+            'spotId',
+            'userId',
+            'startDate',
+            'endDate',
+            'createdAt',
+            'updatedAt',
+        ]
+    });
+    
+    //if user owns the spot - create a formated data object to return
+    if(spot.ownerId === userId) {
+        const ownerData = bookings.map(booking => ({
+            User: {
+                id: booking.user.id,
+                firstName: booking.user.firstName,
+                lastName: booking.user.lastName
+            },
+            id: booking.id,
+            spotId: booking.spotId,
+            userId: booking.userId,
+            startDate: booking.startDate,
+            endDate: booking.endDdate,
+            createdAt: booking.createdAt,
+            updatedAt: booking.updatedAt
+        }))
+
+        return res.status(200).json({Bookings: ownerData})
+    } else {
+        const nonOwnerData = bookings.map(booking => ({
+            spotId: spotId,
+            startDate: booking.startDate,
+            endDate: booking.endDate,
+        }))
+        
+        return res.status(200).json({Bookings: nonOwnerData})
+    };
+})
 //Create a Booking from a Spot based on the Spot's id
 router.post('/:spotId/bookings', requireAuth, bookingConflicts, async (req, res) => {
     const { spotId } = req.params;

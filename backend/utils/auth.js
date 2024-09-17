@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Spot, Review } = require('../db/models');
+const { User, Spot, Review, Booking } = require('../db/models');
 
 
 const { secret, expiresIn } = jwtConfig;
@@ -106,6 +106,22 @@ const requireReviewOwner = async (req, res, next)=> {
   next();
 }
 
+const requireBookingOwner = async (req, res, next) => {
+  const {bookingId} = req.params;
+
+  const booking = await Booking.findByPk(bookingId);
+
+  if(!booking) {
+    return res.status(404).json({message: "Booking couldn't be found"});
+  }
+
+  if(booking.userId !== req.user.id) {
+    return res.status(403).json({message: "Forbiddy B"})
+  }
+
+  next();
+}
+
 
 
 
@@ -114,6 +130,7 @@ module.exports = {
   restoreUser, 
   requireAuth, 
   requireSpotOwner,
-  requireReviewOwner 
+  requireReviewOwner,
+  requireBookingOwner
 };
 
