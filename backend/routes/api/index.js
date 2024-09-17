@@ -39,4 +39,18 @@ router.use('/spot-images', spotImageRouter);
 
 router.use('/review-images', reviewImageRouter);
 
+router.use((err, req, res, next) => {
+  if (err.status === 401 && err.errors?.message === 'Authentication required') {
+    // Return simple error response for authentication issues
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  //invalid credentials for login
+  if(err.errors.credential === 'The provided credentials were invalid.') {
+    return res.status(401).json({message: "Invalid credentials"})
+  }
+  
+  next(err);
+});
+
 module.exports = router;

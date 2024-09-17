@@ -17,6 +17,8 @@ const handleValidationErrors = (req, _res, next) => {
       err.errors = errors;
       err.status = 400;
       err.title = "Bad request.";
+
+      
       next(err);
     }
     next();
@@ -142,12 +144,59 @@ const bookingConflicts = async (req, res, next) => {
   next();
 };
 
+const validateParameters = (req, res, next) => {
+  const {page, size, minLat, minLng, maxLat, maxLng, minPrice, maxPrice} = req.query;
+  const errors = {};
+  // Validate page and size parameters
+  const pageInt = parseInt(page);
+  const sizeInt = parseInt(size);
+
+  if (page && (isNaN(pageInt) || pageInt < 1)) {
+    errors.page = "Page must be greater than or equal to 1";
+  }
+
+  if (size && (isNaN(sizeInt) || sizeInt < 1 || sizeInt > 20)) {
+    errors.size = "Size must be between 1 and 20";
+  }
+
+  //validate latitude and longitude
+  if (minLat && (isNaN(parseFloat(minLat)) || minLat < -90 || minLat > 90)) {
+    errors.minLat = "Minimum latitude is invalid";
+  }
+  if (maxLat && (isNaN(parseFloat(maxLat)) || maxLat < -90 || maxLat > 90)) {
+    errors.maxLat = "Maximum latitude is invalid";
+  }
+  if (minLng && (isNaN(parseFloat(minLng)) || minLng < -180 || minLng > 180)) {
+    errors.minLng = "Minimum longitude is invalid";
+  }
+  if (maxLng && (isNaN(parseFloat(maxLng)) || maxLng < -180 || maxLng > 180)) {
+    errors.maxLng = "Maximum longitude is invalid";
+  }
+
+  //validate price
+  if(minPrice && (isNaN(parseFloat(minPrice)) || minPrice < 0)){
+    errors.minPrice = "Minimum price must be greater than or equal to 0"
+  }
+  if(maxPrice && (isNaN(parseFloat(maxPrice)) || maxPrice < 0)) {
+    errors.maxPrice = "Maximum price must be greater than or equal to 0"
+  }
+
+  if(Object.keys(errors).length > 0){
+    return res.status(400).json({
+      message: "Bad Request",
+      errors
+    })
+  }
+  next();
+}
+
 
 
 module.exports = {
     handleValidationErrors,
     validateReview,
     validateSpot,
-    bookingConflicts
+    bookingConflicts,
+    validateParameters
 };
 

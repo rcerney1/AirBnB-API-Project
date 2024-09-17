@@ -20,8 +20,7 @@ router.get('/current', requireAuth, async (req, res) => {
         include: [
             {
                 model: User,
-                attributes: ['id', 'firstName', 'lastName'],
-                as: 'user'
+                attributes: ['id', 'firstName', 'lastName']
             },
             {
                 model: Spot,
@@ -38,7 +37,6 @@ router.get('/current', requireAuth, async (req, res) => {
                     'price',
                     [sequelize.literal(previewImageQuery), 'previewImage']
                 ],
-                as: 'spot'
             },
             {
                 model: ReviewImage,

@@ -1,15 +1,37 @@
 const express = require('express');
-const { Op, json } = require('sequelize')
+const { Op } = require('sequelize')
 const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
-const { requireAuth, requireSpotOwner, requireReviewOwner } = require('../../utils/auth');
-const { validateReview, validateSpot,  bookingConflicts } = require('../../utils/validation');
+const { requireAuth, requireSpotOwner } = require('../../utils/auth');
+const { validateReview, validateSpot, validateParameters, bookingConflicts } = require('../../utils/validation');
 // const { process_params } = require('express/lib/router');
 const router = express.Router();
 
 
 
 //Get all Spots
-router.get('/', async (req, res)=> {
+router.get('/', validateParameters, async (req, res)=> {
+    //get query parameters
+    let {page, size, minLat, minLng, maxLat, maxLng, minPrice, maxPrice } = req.query;
+    //set default values for pagination
+    page = parseInt(page) || 1;
+    size = parseInt(size) || 20;
+
+    if (page < 1) page = 1;
+    if (size < 1 || size > 20) size = 20;
+
+     // Create filters object
+     const filters = {};
+
+     // Add conditions based on latitude and longitude
+     if (minLat) filters.lat = { [Op.gte]: parseFloat(minLat) };
+     if (maxLat) filters.lat = { [Op.lte]: parseFloat(maxLat) };
+     if (minLng) filters.lng = { [Op.gte]: parseFloat(minLng) };
+     if (maxLng) filters.lng = { [Op.lte]: parseFloat(maxLng) };
+ 
+     // Add conditions for price range
+     if (minPrice) filters.price = { [Op.gte]: parseFloat(minPrice) };
+     if (maxPrice) filters.price = { [Op.lte]: parseFloat(maxPrice) };
+
     //create query for preview Image to use in sequelize.literal within the attributes array
     const previewImageQuery = `(
         SELECT url FROM SpotImages
@@ -24,6 +46,7 @@ router.get('/', async (req, res)=> {
     
     //find all spots
     const spots = await Spot.findAll({
+        where: filters,
         include: [
             {
                 model: Review,
@@ -50,11 +73,13 @@ router.get('/', async (req, res)=> {
             'updatedAt',
             [sequelize.literal(avgRatingQuery), 'avgRating'],
             [sequelize.literal(previewImageQuery), 'previewImage']
-        ]
+        ],
+        limit: size,
+        offset: (page - 1) * size,
     });
     
-    //return results
-    return res.json({Spots: spots});
+    //return results w/ pagination
+    return res.json({Spots: spots, page, size});
 });
 
 router.get('/test', async (req, res) => {
@@ -107,11 +132,44 @@ router.get('/current', requireAuth, async (req, res) => {
         ],
         
     })
-
     //! possibly create a formated spots object to return, not right now though because you're tired, lazy, and gay
-
     return res.json({Spots: spots})
-})
+});
+
+// router.get('/current', requireAuth, async (req, res, next) => {
+//     try {
+//         // create query for preview Image to use in sequelize.literal within the attributes array
+//         const previewImageQuery = `(
+//             SELECT url FROM SpotImages
+//             WHERE SpotImages.spotId = spot.id
+//             LIMIT 1
+//         )`;
+//         const avgRatingQuery = `(
+//             SELECT AVG(stars) FROM Reviews
+//             WHERE Reviews.spotId = Spot.id
+//         )`;
+    
+//         // find all spots owned by the current user
+//         const spots = await Spot.findAll({
+//             where: { ownerId: req.user.id },
+//             include: [
+//                 { model: Review, attributes: [] },
+//                 { model: SpotImage, attributes: [] }
+//             ],
+//             attributes: [
+//                 'id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 
+//                 'description', 'price', 'createdAt', 'updatedAt',
+//                 [sequelize.literal(avgRatingQuery), 'avgRating'],
+//                 [sequelize.literal(previewImageQuery), 'previewImage']
+//             ]
+//         });
+    
+//         return res.json({ Spots: spots });
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
 
 //Get details of a Spot from an id
 router.get('/:spotId', async (req, res) => {
@@ -137,7 +195,6 @@ router.get('/:spotId', async (req, res) => {
             },
             {
                 model: User,
-                as: 'Owner',
                 attributes: ['id', 'firstName', 'lastName']
             },
             {
@@ -173,6 +230,7 @@ router.get('/:spotId', async (req, res) => {
     };
 
     //return data
+    //! create formatted object to return
     return res.json(spot)
 })
 

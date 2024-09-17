@@ -32,9 +32,7 @@ router.get('/current', requireAuth, async (req, res) => {
                     'name',
                     'price',
                     [sequelize.literal(previewImageQuery), 'previewImage']
-                ],
-                as: 'spot'
-                
+                ],          
             }
         ],
         attributes: [
@@ -53,17 +51,17 @@ router.get('/current', requireAuth, async (req, res) => {
         id: booking.id,
         spotId: booking.spotId,
         Spot: {
-            id: booking.spot.id,
-            ownerId: booking.spot.ownerId,
-            address: booking.spot.address,
-            city: booking.spot.city,
-            state: booking.spot.state,
-            country: booking.spot.country,
-            lat: booking.spot.lat,
-            lng: booking.spot.lng,
-            name: booking.spot.name,
-            price: booking.spot.price,
-            previewImage: booking.spot.dataValues.previewImage //! this took me 2 hours to figure out
+            id: booking.Spot.id,
+            ownerId: booking.Spot.ownerId,
+            address: booking.Spot.address,
+            city: booking.Spot.city,
+            state: booking.Spot.state,
+            country: booking.Spot.country,
+            lat: booking.Spot.lat,
+            lng: booking.Spot.lng,
+            name: booking.Spot.name,
+            price: booking.Spot.price,
+            previewImage: booking.Spot.dataValues.previewImage //! this took me 2 hours to figure out
         },
         userId: booking.userId,
         startDate: booking.startDate,
