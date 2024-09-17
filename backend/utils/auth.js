@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Spot, Review, Booking } = require('../db/models');
+const { User, Spot, Review, Booking, SpotImage, ReviewImage } = require('../db/models');
 
 
 const { secret, expiresIn } = jwtConfig;
@@ -75,7 +75,19 @@ const requireAuth = function (req, _res, next) {
 
 //requires current user to be the owner of a spot
 const requireSpotOwner = async (req, res, next) => {
-  const {spotId} = req.params;
+  let {spotId} = req.params;
+
+  //if req.params only gives an image id, find the images spotId
+  if (!spotId && req.params.imageId) {
+    const spotImage = await SpotImage.findByPk(req.params.imageId);
+
+    if (!spotImage) {
+      return res.status(404).json({ message: "Spot Image couldn't be found" });
+    }
+
+    spotId = spotImage.spotId;
+  }
+
   const spot = await Spot.findByPk(spotId);
 
   if(!spot) {
@@ -91,7 +103,18 @@ const requireSpotOwner = async (req, res, next) => {
 
 //requires current user to be owner of a review
 const requireReviewOwner = async (req, res, next)=> {
-  const {reviewId} = req.params;
+  let {reviewId} = req.params;
+
+  //if req.params only gives an image id, find the images spotId
+  if (!reviewId && req.params.imageId) {
+    const reviewImage = await ReviewImage.findByPk(req.params.imageId);
+
+    if (!reviewImage) {
+      return res.status(404).json({ message: "Review Image couldn't be found" });
+    }
+
+    reviewId = reviewImage.reviewId;
+  }
 
   const review = await Review.findByPk(reviewId);
 
@@ -100,6 +123,7 @@ const requireReviewOwner = async (req, res, next)=> {
   }
 
   if(review.userId != req.user.id) {
+    // console.log(review.userId, req.user.id, review)
     return res.status(403).json({message: "Forbidden"});
   }
 
