@@ -1,7 +1,7 @@
 const express = require('express');
 const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
-const { requireAuth, requireSpotOwner } = require('../../utils/auth');
-const { validateReview, validateSpot } = require('../../utils/validation');
+const { requireAuth, requireSpotOwner, requireBookingOwner } = require('../../utils/auth');
+const { validateReview, validateSpot, bookingConflicts } = require('../../utils/validation');
 const { process_params } = require('express/lib/router');
 const { UPDATE } = require('sequelize/lib/query-types');
 const router = express.Router();
@@ -74,7 +74,53 @@ router.get('/current', requireAuth, async (req, res) => {
 
     //console.log(bookings[0].spot.dataValues.previewImage)
 
-    res.json({Bookings: bookings})
+    res.json({Bookings: formattedData})
+})
+
+//Edit a booking
+router.put('/:bookingId', requireAuth, requireBookingOwner, bookingConflicts,  async (req, res) => {
+    const { bookingId } = req.params;
+    const { startDate, endDate } = req.body;
+    
+    const booking = await Booking.findByPk(bookingId);
+
+    //Can't edit a booking that's past the end date
+    const now = new Date();
+    if(new Date(booking.endDate) < now) {
+        return res.status(403).json({message:"Past bookings can't be modified"})
+    }
+
+    //update booking
+    booking.startDate = startDate;
+    booking.endDate = endDate;
+    await booking.save()
+
+    return res.json(booking)
+
+})
+
+//Delete a booking
+router.delete('/:bookingId', requireAuth, requireBookingOwner, async (req, res) => {
+    const { bookingId } = req.params;
+
+    const booking = await Booking.findByPk(bookingId);
+
+    if(!booking) {
+        return res.status(404).json({message:"Booking couldn't be found"});
+    }
+
+    //Bookings that have been started can't be deleted
+    const now = new Date();
+    const start = new Date(booking.startDate);
+    const end = new Date(booking.endDate);
+
+    if(start < now && end > now) {
+        return res.status(403).json({message: "Bookings that have been started can't be deleted"})
+    }
+
+    await booking.destroy();
+
+    res.json({message: "Successfully deleted"});
 })
 
 module.exports = router;
