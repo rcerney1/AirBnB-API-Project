@@ -1,10 +1,9 @@
 const express = require('express');
-const { Spot, Review, User, SpotImage, sequelize, ReviewImage } = require('../../db/models')
-const { requireAuth, requireSpotOwner } = require('../../utils/auth');
-const { check } = require('express-validator');
-
-const { handleValidationErrors, validateReview, validateSpot } = require('../../utils/validation');
-const { process_params } = require('express/lib/router');
+const { Op } = require('sequelize')
+const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
+const { requireAuth, requireSpotOwner, requireReviewOwner } = require('../../utils/auth');
+const { validateReview, validateSpot, validateBooking, bookingConflicts } = require('../../utils/validation');
+// const { process_params } = require('express/lib/router');
 const router = express.Router();
 
 
@@ -107,8 +106,9 @@ router.get('/current', requireAuth, async (req, res) => {
             [sequelize.literal(previewImageQuery), 'previewImage']
         ],
         
-        
     })
+
+    //! possibly create a formated spots object to return, not right now though because you're tired, lazy, and gay
 
     return res.json({Spots: spots})
 })
@@ -318,6 +318,37 @@ router.get('/:spotId/reviews', async (req, res) => {
     });
 
     return res.json({Reviews: reviews})
+})
+
+//Get all Bookings for a Spot based on the Spot's id
+
+//Create a Booking from a Spot based on the Spot's id
+router.post('/:spotId/bookings', requireAuth, bookingConflicts, async (req, res) => {
+    const { spotId } = req.params;
+    const { startDate, endDate, createdAt, updatedAt } = req.body;
+    const userId = req.user.id;
+
+    //check if spot exists
+    const spot = await Spot.findByPk(spotId);
+    if(!spot) {
+        return res.status(404).json({message: "Spot couldn't be found"})
+    }
+
+    //spot can NOT be owned by current user
+    if(spot.ownerId === userId) {
+        return res.status(403).json({message: "Forbidden"})
+    }
+
+    const newBooking = await Booking.create({
+        spotId,
+        userId,
+        startDate,
+        endDate,
+        createdAt,
+        updatedAt
+    })
+
+    return res.status(201).json(newBooking)
 })
 
 module.exports = router;

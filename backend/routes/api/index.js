@@ -5,9 +5,7 @@ const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
 const spotsRouter = require('./spots.js');
-<<<<<<< HEAD
-const reviewsRouter = require('.reviews.js');
-=======
+const bookingsRouter = require('./bookings.js');
 const reviewsRouter = require('./reviews.js');
 
 >>>>>>> dev
@@ -32,5 +30,7 @@ router.use('/users', usersRouter);
 router.use('/spots', spotsRouter);
 
 router.use('/reviews', reviewsRouter);
+
+router.use('/bookings', bookingsRouter);
 
 module.exports = router;

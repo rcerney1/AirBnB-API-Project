@@ -1,4 +1,6 @@
 const { validationResult, check } = require('express-validator');
+const { Op } = require('sequelize')
+const {Booking} = require('../db/models');
 
 // middleware for formatting errors from express-validator middleware
 // (to customize, see express-validator's documentation)
@@ -81,9 +83,65 @@ const validateSpot = [
   handleValidationErrors
 ]
 
+
+
+//bookingConflicts middleWare
+const bookingConflicts = async (req, res, next) => {
+  const { spotId } = req.params;
+  const { startDate, endDate } = req.body;
+  const userId = req.user.id;
+
+  // Check for conflicting bookings
+  const conflictingBooking = await Booking.findOne({
+    where: {
+      spotId,
+      [Op.or]: [
+        {
+          startDate: {
+            [Op.lte]: endDate
+          },
+          endDate: {
+            [Op.gte]: startDate
+          }
+        }
+      ]
+    }
+  });
+  const newStartDate = new Date(startDate);
+  const newEndDate = new Date(endDate)
+
+  if (conflictingBooking) {
+    if (newStartDate <= conflictingBooking.endDate && newStartDate >= conflictingBooking.startDate) {
+      // Conflict with existing booking's endDate
+      return res.status(400).json({
+        message: 'Start date conflicts with an existing booking',
+        errors: {
+          startDate: 'Start date conflicts with an existing booking'
+        }
+      });
+    } else if (newEndDate >= conflictingBooking.startDate && newEndDate <= conflictingBooking.endDate) {
+      // Conflict with existing booking's startDate
+      return res.status(400).json({
+        message: 'End date conflicts with an existing booking',
+        errors: {
+          endDate: 'End date conflicts with an existing booking'
+        }
+      });
+    }
+  }
+
+  
+
+  // If no conflicts, proceed to next middleware or route handler
+  next();
+};
+
+
+
 module.exports = {
     handleValidationErrors,
     validateReview,
-    validateSpot
+    validateSpot,
+    bookingConflicts
 };
 
