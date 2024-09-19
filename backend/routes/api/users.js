@@ -30,7 +30,8 @@ const validateSignup = [
 ];
 
 //User Signup API Route
-router.post('/', validateSignup, async (req, res) => {
+router.post('/', validateSignup, async (req, res, next) => {
+  try{
     const { firstName, lastName, email, password, username } = req.body;
     const hashedPassword = bcrypt.hashSync(password);
     const user = await User.create({ firstName, lastName, email, username, hashedPassword });
@@ -48,6 +49,9 @@ router.post('/', validateSignup, async (req, res) => {
     return res.json({
         user: safeUser
     });
+  }catch(err){
+    next(err);
+  }
 });
 
 module.exports = router;

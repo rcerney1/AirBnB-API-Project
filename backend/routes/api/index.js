@@ -46,10 +46,24 @@ router.use((err, req, res, next) => {
   }
 
   //invalid credentials for login
-  if(err.errors.credential === 'The provided credentials were invalid.') {
+  if(err.errors?.credential === 'The provided credentials were invalid.') {
     return res.status(401).json({message: "Invalid credentials"})
   }
-  
+
+  //User already exists with the specified email or username
+  if(err.name === 'SequelizeUniqueConstraintError' && (err.errors?.[0].path === 'email' || err.errors?.[0].path === 'username')){
+    const errors = {};
+    err.errors.forEach(error => {
+      if (error.path === 'email'){
+        errors.email = 'User with that email already exists';
+      }
+      if (error.path === 'username') {
+        errors.username = 'User with that username already exists'
+      }
+    });
+    return res.status(500).json({message: "User already exists", errors})
+    
+  }
   next(err);
 });
 
