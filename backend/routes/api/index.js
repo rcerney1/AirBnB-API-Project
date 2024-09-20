@@ -40,6 +40,7 @@ router.use('/spot-images', spotImageRouter);
 router.use('/review-images', reviewImageRouter);
 
 router.use((err, req, res, next) => {
+  //requires authentication error
   if (err.status === 401 && err.errors?.message === 'Authentication required') {
     // Return simple error response for authentication issues
     return res.status(401).json({ message: 'Authentication required' });
@@ -64,6 +65,9 @@ router.use((err, req, res, next) => {
     return res.status(500).json({message: "User already exists", errors})
     
   }
+
+  //login body validation
+  
   next(err);
 });
 
