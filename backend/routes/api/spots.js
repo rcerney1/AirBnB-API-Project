@@ -77,9 +77,11 @@ router.get('/', validateParameters, async (req, res)=> {
         limit: size,
         offset: (page - 1) * size,
     });
-    
+    //return results w/out pagination
+    return res.json({Spots: spots})
+
     //return results w/ pagination
-    return res.json({Spots: spots, page, size});
+    //return res.json({Spots: spots, page, size});
 });
 
 router.get('/test', async (req, res) => {
@@ -136,41 +138,6 @@ router.get('/current', requireAuth, async (req, res) => {
     return res.json({Spots: spots})
 });
 
-// router.get('/current', requireAuth, async (req, res, next) => {
-//     try {
-//         // create query for preview Image to use in sequelize.literal within the attributes array
-//         const previewImageQuery = `(
-//             SELECT url FROM SpotImages
-//             WHERE SpotImages.spotId = spot.id
-//             LIMIT 1
-//         )`;
-//         const avgRatingQuery = `(
-//             SELECT AVG(stars) FROM Reviews
-//             WHERE Reviews.spotId = Spot.id
-//         )`;
-    
-//         // find all spots owned by the current user
-//         const spots = await Spot.findAll({
-//             where: { ownerId: req.user.id },
-//             include: [
-//                 { model: Review, attributes: [] },
-//                 { model: SpotImage, attributes: [] }
-//             ],
-//             attributes: [
-//                 'id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 
-//                 'description', 'price', 'createdAt', 'updatedAt',
-//                 [sequelize.literal(avgRatingQuery), 'avgRating'],
-//                 [sequelize.literal(previewImageQuery), 'previewImage']
-//             ]
-//         });
-    
-//         return res.json({ Spots: spots });
-//     } catch (error) {
-//         next(error);
-//     }
-// });
-
-
 //Get details of a Spot from an id
 router.get('/:spotId', async (req, res) => {
     const { spotId } = req.params;
@@ -217,7 +184,7 @@ router.get('/:spotId', async (req, res) => {
             'price',
             'createdAt',
             'updatedAt',
-            [sequelize.literal(numReviews), 'NumReviews'],
+            [sequelize.literal(numReviews), 'numReviews'],
             [sequelize.literal(avgRatingQuery), 'avgStarRating'],
         ]  
     });
@@ -229,9 +196,34 @@ router.get('/:spotId', async (req, res) => {
         })
     };
 
-    //return data
     //! create formatted object to return
-    return res.json(spot)
+    const formattedSpot = {
+        id: spot.id,
+        ownerId: spot.ownerId,
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        description: spot.description,
+        price: spot.price,
+        createdAt: spot.createdAt,
+        updatedAt: spot.updatedAt,
+        numReviews: spot.dataValues.numReviews,
+        avgStarRating: spot.dataValues.avgStarRating,
+        SpotImages: spot.SpotImages,
+        Owner: {
+            id: spot.User.id,
+            firstName: spot.User.firstName,
+            lastName: spot.User.lastName
+        }
+
+
+    }
+
+    return res.json(formattedSpot)
 })
 
 //create a spot
@@ -252,8 +244,25 @@ router.post('/', validateSpot, requireAuth, async (req, res) => {
         price
     });
 
+    //format data object
+    const formattedSpot = {
+        id: newSpot.id,
+        ownerId: newSpot.ownerId,
+        address,
+        city,
+        state,
+        country,
+        lat,
+        lng,
+        name,
+        description,
+        price,
+        createdAt: newSpot.createdAt,
+        updatedAt: newSpot.updatedAt
+    };
+
     //return spot with 201 status code
-    return res.status(201).json(newSpot)
+    return res.status(201).json(formattedSpot)
 });
 
 //Add an Image to a Spot based on the Spot's id
