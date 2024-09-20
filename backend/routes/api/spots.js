@@ -3,6 +3,7 @@ const { Op } = require('sequelize')
 const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
 const { requireAuth, requireSpotOwner } = require('../../utils/auth');
 const { validateReview, validateSpot, validateParameters, bookingConflicts } = require('../../utils/validation');
+const { format } = require('sequelize/lib/utils');
 // const { process_params } = require('express/lib/router');
 const router = express.Router();
 
@@ -355,7 +356,18 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
         stars
     });
 
-    return res.status(201).json(newReview)
+    //formatted review object to return
+    const formattedReview = {
+        id: newReview.id,
+        userId: newReview.userId,
+        spotId: newReview.spotId,
+        review: newReview.review,
+        stars: newReview.stars,
+        createdAt: newReview.createdAt,
+        updatedAt: newReview.updatedAt
+    }
+
+    return res.status(201).json(formattedReview)
 });
 
 //Get all Reviews by a Spot's id
