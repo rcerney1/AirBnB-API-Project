@@ -16,7 +16,7 @@ router.get('/current', requireAuth, async (req, res) => {
 
     const reviews = await Review.findAll({
         where: { userId: req.user.id },
-        attributes: ['id', 'userId', 'spotId', 'review', 'stars'],
+        attributes: ['id', 'userId', 'spotId', 'review', 'stars', 'createdAt', 'updatedAt'],
         include: [
             {
                 model: User,
@@ -45,6 +45,8 @@ router.get('/current', requireAuth, async (req, res) => {
         ]
     });
 
+    
+    
     return res.json({Reviews: reviews})
 });
 
@@ -59,7 +61,7 @@ router.post('/:reviewId/images', requireAuth, requireReviewOwner, async (req, re
     });
 
     if (reviewImageCount.length >= 10) {
-        return res.status(403).json("Maximum number of images for this resource was reached")
+        return res.status(403).json({message: "Maximum number of images for this resource was reached"})
     };
 
     // Create new review image
