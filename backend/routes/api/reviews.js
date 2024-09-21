@@ -77,20 +77,10 @@ router.post('/:reviewId/images', requireAuth, requireReviewOwner, async (req, re
 });
 
 //Edit a Review
-router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
+router.put('/:reviewId', requireAuth, validateReview, requireReviewOwner, async (req, res) => {
     const { reviewId } = req.params;
     const { review, stars } = req.body;
     const existingReview= await Review.findByPk(reviewId);
-
-    //check if review exists
-    if(!existingReview) {
-        res.status(404).json({message: "Review couldn't be found"});
-    }
-
-     //check if review belongs to current user
-     if(existingReview.userId !== req.user.id) {
-        return res.status(403).json({message: "Review must belong to current user"})
-    }
 
     //edit review
     const updatedReview = await existingReview.update({
@@ -98,7 +88,18 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
         stars
     });
 
-    return res.json(updatedReview)
+    //format object to return
+    const formattedReview = {
+        id: updatedReview.id,
+        userId: updatedReview.userId,
+        spotId: updatedReview.spotId,
+        review: updatedReview.review,
+        stars: updatedReview.stars,
+        createdAt: updatedReview.createdAt,
+        updatedAt: updatedReview.updatedAt
+    }
+
+    return res.json(formattedReview)
 });
 
 //Delete a Review

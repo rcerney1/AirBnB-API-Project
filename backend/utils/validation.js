@@ -77,6 +77,35 @@ const validateSpot = [
     .isFloat({min: 0})
     .withMessage("Price per day must be a positive number"),
   handleValidationErrors
+];
+
+//validateBooking MiddleWare
+const validateBooking = [
+  check('startDate')
+    .exists({ checkFalsy: true })
+    .withMessage('Start date is required')
+    .isISO8601()
+    .withMessage('Start date must be a valid date')
+    .custom((startDate) => {
+      const currentDate = new Date();
+      if (new Date(startDate) < currentDate) {
+        throw new Error('Start date cannot be in the past');
+      }
+      return true;
+    }),
+  check('endDate')
+    .exists({ checkFalsy: true })
+    .withMessage('End date is required')
+    .isISO8601()
+    .withMessage('End date must be a valid date')
+    .custom((endDate, { req }) => {
+      const startDate = new Date(req.body.startDate);
+      if (new Date(endDate) <= startDate) {
+        throw new Error('End date cannot be on or before startDate');
+      }
+      return true;
+    }),
+  handleValidationErrors
 ]
 
 
@@ -93,41 +122,49 @@ const bookingConflicts = async (req, res, next) => {
     spotId = book.spotId;
   }
 
-  // Check for conflicting bookings
-  const conflictingBooking = await Booking.findOne({
-    where: {
-      spotId,
-      [Op.or]: [
-        {
-          startDate: {
-            [Op.lte]: endDate
-          },
-          endDate: {
-            [Op.gte]: startDate
-          }
-        }
-      ]
-    }
-  });
   const newStartDate = new Date(startDate);
   const newEndDate = new Date(endDate)
 
+  // Check for conflicting bookings
+  const conflictingBooking = await Booking.findOne({
+    where: {
+      spotId
+    }
+  })
+
+  
   if (conflictingBooking) {
-    if (newStartDate <= conflictingBooking.endDate && newStartDate >= conflictingBooking.startDate) {
-      // Conflict with existing booking's endDate
-      return res.status(400).json({
-        message: 'Start date conflicts with an existing booking',
-        errors: {
-          startDate: 'Start date conflicts with an existing booking'
-        }
-      });
-    } else if (newEndDate >= conflictingBooking.startDate && newEndDate <= conflictingBooking.endDate) {
-      // Conflict with existing booking's startDate
-      return res.status(400).json({
-        message: 'End date conflicts with an existing booking',
-        errors: {
-          endDate: 'End date conflicts with an existing booking'
-        }
+    const errors = {};
+    //if start date conflicts with existing booking
+    if(newStartDate.getTime() === conflictingBooking.startDate.getTime()){
+      errors.startDate = "Start date conflicts with an existing booking";
+    }
+    if(newStartDate.getTime() === conflictingBooking.endDate.getTime()){
+      errors.startDate = "Start Date conflicts with an existing booking"
+    }
+    if(newEndDate.getTime() === conflictingBooking.startDate.getTime()){
+      errors.endDate = "End Date conflicts with an existing booking"
+    }
+    if(newEndDate.getTime() === conflictingBooking.endDate.getTime()){
+      errors.endDate = "End Date conflicts with an existing booking"
+    }
+    if(newStartDate >= conflictingBooking.startDate && newStartDate <= conflictingBooking.endDate){
+      errors.startDate = "Start Date conflicts with an existing booking";
+      
+    }
+    if(newEndDate >= conflictingBooking.startDate && newEndDate <= conflictingBooking.endDate){
+      errors.endDate = "End Date conflicts with an existing booking";
+    }
+    if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate){
+      errors.startDate = "Start Date conflicts with an existing booking",
+      errors.endDate = "End Date conflicts with an existing booking"
+    }
+    
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(403).json({
+        message: "Sorry, this spot is already booked for the specified dates",
+        errors
       });
     }
   }
@@ -190,6 +227,7 @@ module.exports = {
     handleValidationErrors,
     validateReview,
     validateSpot,
+    validateBooking,
     bookingConflicts,
     validateParameters
 };

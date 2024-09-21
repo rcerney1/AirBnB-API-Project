@@ -2,7 +2,7 @@ const express = require('express');
 const { Op } = require('sequelize')
 const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
 const { requireAuth, requireSpotOwner } = require('../../utils/auth');
-const { validateReview, validateSpot, validateParameters, bookingConflicts } = require('../../utils/validation');
+const { validateReview, validateSpot, validateBooking, validateParameters, bookingConflicts } = require('../../utils/validation');
 const { format } = require('sequelize/lib/utils');
 // const { process_params } = require('express/lib/router');
 const router = express.Router();
@@ -383,11 +383,11 @@ router.get('/:spotId/reviews', async (req, res) => {
     // Find all reviews for the spot
     const reviews = await Review.findAll({
         where: { spotId },
+        attributes: ['id', 'userId', 'spotId', 'review', 'stars', 'createdAt', 'updatedAt'],
         include: [
             {
                 model: User,
                 attributes: ['id', 'firstName', 'lastName'],
-                as: 'user'
             },
             {
                 model: ReviewImage,
@@ -459,7 +459,7 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
     };
 })
 //Create a Booking from a Spot based on the Spot's id
-router.post('/:spotId/bookings', requireAuth, bookingConflicts, async (req, res) => {
+router.post('/:spotId/bookings', requireAuth, validateBooking, bookingConflicts, async (req, res) => {
     const { spotId } = req.params;
     const { startDate, endDate, createdAt, updatedAt } = req.body;
     const userId = req.user.id;
