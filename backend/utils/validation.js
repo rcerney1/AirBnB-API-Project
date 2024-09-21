@@ -126,28 +126,24 @@ const bookingConflicts = async (req, res, next) => {
   const newEndDate = new Date(endDate)
 
   // Check for conflicting bookings
-  const conflictingBooking = await Booking.findOne({
+  const existingBookings = await Booking.findAll({
     where: {
       spotId
     }
   })
 
-  
-  if (conflictingBooking) {
-    const errors = {};
+  const errors = {};
+
+  existingBookings.forEach(conflictingBooking => {
     //if start date conflicts with existing booking
-    if(newStartDate.getTime() === conflictingBooking.startDate.getTime()){
+    if(newStartDate.getTime() === conflictingBooking.startDate.getTime() || newStartDate.getTime() === conflictingBooking.endDate.getTime()) {
       errors.startDate = "Start date conflicts with an existing booking";
     }
-    if(newStartDate.getTime() === conflictingBooking.endDate.getTime()){
-      errors.startDate = "Start Date conflicts with an existing booking"
-    }
-    if(newEndDate.getTime() === conflictingBooking.startDate.getTime()){
+  
+    if(newEndDate.getTime() === conflictingBooking.startDate.getTime() || newEndDate.getTime() === conflictingBooking.endDate.getTime()) {
       errors.endDate = "End Date conflicts with an existing booking"
     }
-    if(newEndDate.getTime() === conflictingBooking.endDate.getTime()){
-      errors.endDate = "End Date conflicts with an existing booking"
-    }
+    
     if(newStartDate >= conflictingBooking.startDate && newStartDate <= conflictingBooking.endDate){
       errors.startDate = "Start Date conflicts with an existing booking";
       
@@ -159,18 +155,15 @@ const bookingConflicts = async (req, res, next) => {
       errors.startDate = "Start Date conflicts with an existing booking",
       errors.endDate = "End Date conflicts with an existing booking"
     }
-    
+  }); 
 
-    if (Object.keys(errors).length > 0) {
-      return res.status(403).json({
-        message: "Sorry, this spot is already booked for the specified dates",
-        errors
-      });
-    }
+  if (Object.keys(errors).length > 0) {
+    return res.status(403).json({
+      message: "Sorry, this spot is already booked for the specified dates",
+      errors
+    });
   }
-
   
-
   // If no conflicts, proceed to next middleware or route handler
   next();
 };
