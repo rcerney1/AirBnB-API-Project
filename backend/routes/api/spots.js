@@ -87,7 +87,8 @@ router.get('/', validateParameters, async (req, res)=> {
 
 router.get('/test', async (req, res) => {
     const spots = await Spot.findAll();
-    return res.json(spots)
+    const reviews = await Review.findAll();
+    return res.json(spots, reviews)
 });
 
 //Get all Spots owned by the Current User
