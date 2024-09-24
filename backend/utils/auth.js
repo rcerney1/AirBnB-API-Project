@@ -91,7 +91,7 @@ const requireSpotOwner = async (req, res, next) => {
   const spot = await Spot.findByPk(spotId);
 
   if(!spot) {
-    return res.status(404).json({message: "spot couldn't be found"});
+    return res.status(404).json({message: "Spot couldn't be found"});
   }
 
   if(spot.ownerId != req.user.id) {

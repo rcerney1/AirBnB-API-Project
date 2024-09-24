@@ -23,10 +23,10 @@ const validateSignup = [
       .not()
       .isEmail()
       .withMessage('Username cannot be an email.'),
-    check('password')
-      .exists({ checkFalsy: true })
-      .isLength({ min: 6 })
-      .withMessage('Password must be 6 characters or more.'),
+    // check('password')
+    //   .exists({ checkFalsy: true })
+    //   .isLength({ min: 6 })
+    //   .withMessage('Password must be 6 characters or more.'),
     check('firstName')
       .exists({ checkFalsy: true})
       .withMessage('First Name is required'),
@@ -53,7 +53,7 @@ router.post('/', validateSignup, async (req, res, next) => {
 
     await setTokenCookie(res, safeUser);
 
-    return res.json({
+    return res.status(201).json({
         user: safeUser
     });
   }catch(err){

@@ -9,7 +9,7 @@ const handleValidationErrors = (req, _res, next) => {
     if (!validationErrors.isEmpty()) { 
       const errors = {};
       //for specifically editting bookings, I know this isn't best practice
-      if(req.route.methods.put === true){
+      if(req.route.methods.put === true && req.route.path === '/:bookingId' && req.body.startDate !== req.body.endDate && req.body.endDate > req.body.startDate){
         return _res.status(403).json({message: "Past bookings can't be modified"});
       }
       validationErrors
@@ -41,15 +41,15 @@ const validateSpot = [
   check('city')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage('city is required'),
+    .withMessage('City is required'),
   check('state')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage('state is required'),
+    .withMessage('State is required'),
   check('country')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage('country is required'),
+    .withMessage('Country is required'),
   check('lat')
     .exists({ checkFalsy: true })
     .notEmpty()
@@ -92,7 +92,7 @@ const validateBooking = [
     .custom((startDate) => {
       const currentDate = new Date();
       if (new Date(startDate) < currentDate) {
-        throw new Error('Start date cannot be in the past');
+        throw new Error('startDate cannot be in the past');
       }
       return true;
     }),
@@ -142,15 +142,13 @@ const bookingConflicts = async (req, res, next) => {
     //special cases for edits
     //does not conflict within itself
     if(req.route.methods.put === true){
-      if(newStartDate > conflictingBooking.startDate && newEndDate < conflictingBooking.endDate){
-        console.log('\n\n\nWe will let this pass \n\n\n\n');
+      if(newStartDate > conflictingBooking.startDate && newEndDate < conflictingBooking.endDate && conflictingBooking.id.toString() === req.params.bookingId){
         return;
       }
     }
     //does not conflict surrounding
     if(req.route.methods.put === true){
-      if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate){
-        console.log('\n\n\nWe will let this pass \n\n\n\n');
+      if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate && conflictingBooking.id.toString() === req.params.bookingId){
         return;
       }
     }
@@ -158,17 +156,17 @@ const bookingConflicts = async (req, res, next) => {
     if(newStartDate.getTime() === conflictingBooking.startDate.getTime() || newStartDate.getTime() === conflictingBooking.endDate.getTime()) {
       errors.startDate = "Start date conflicts with an existing booking";
     }
-    else if(newEndDate.getTime() === conflictingBooking.startDate.getTime() || newEndDate.getTime() === conflictingBooking.endDate.getTime()) {
+    if(newEndDate.getTime() === conflictingBooking.startDate.getTime() || newEndDate.getTime() === conflictingBooking.endDate.getTime()) {
       errors.endDate = "End Date conflicts with an existing booking"
     }
-    else if(newStartDate >= conflictingBooking.startDate && newStartDate <= conflictingBooking.endDate){
+    if(newStartDate >= conflictingBooking.startDate && newStartDate <= conflictingBooking.endDate){
       errors.startDate = "Start Date conflicts with an existing booking";
       
     }
-    else if(newEndDate >= conflictingBooking.startDate && newEndDate <= conflictingBooking.endDate){
+    if(newEndDate >= conflictingBooking.startDate && newEndDate <= conflictingBooking.endDate){
       errors.endDate = "End Date conflicts with an existing booking";
     }
-    else if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate){
+    if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate){
       errors.startDate = "Start Date conflicts with an existing booking",
       errors.endDate = "End Date conflicts with an existing booking"
     }
@@ -201,11 +199,11 @@ const validateParameters = (req, res, next) => {
   }
 
   //validate latitude and longitude
-  if (minLat && (isNaN(parseFloat(minLat)) || minLat < -90 || minLat > 90)) {
-    errors.minLat = "Minimum latitude is invalid";
-  }
   if (maxLat && (isNaN(parseFloat(maxLat)) || maxLat < -90 || maxLat > 90)) {
     errors.maxLat = "Maximum latitude is invalid";
+  }
+  if (minLat && (isNaN(parseFloat(minLat)) || minLat < -90 || minLat > 90)) {
+    errors.minLat = "Minimum latitude is invalid";
   }
   if (minLng && (isNaN(parseFloat(minLng)) || minLng < -180 || minLng > 180)) {
     errors.minLng = "Minimum longitude is invalid";
