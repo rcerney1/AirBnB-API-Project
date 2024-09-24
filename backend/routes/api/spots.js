@@ -79,10 +79,10 @@ router.get('/', validateParameters, async (req, res)=> {
         offset: (page - 1) * size,
     });
     //return results w/out pagination
-    return res.json({Spots: spots})
+    //return res.json({Spots: spots})
 
     //return results w/ pagination
-    //return res.json({Spots: spots, page, size});
+    return res.json({Spots: spots, page, size});
 });
 
 router.get('/test', async (req, res) => {
@@ -228,7 +228,7 @@ router.get('/:spotId', async (req, res) => {
 })
 
 //create a spot
-router.post('/', validateSpot, requireAuth, async (req, res) => {
+router.post('/', requireAuth, validateSpot, async (req, res) => {
     const {address, city, state, country, lat, lng, name, description, price } = req.body;
         
     //create new spot
@@ -292,7 +292,7 @@ router.post('/:spotId/images', requireAuth, requireSpotOwner, async (req, res) =
 });
 
 //edit a spot
-router.put('/:spotId', validateSpot, requireAuth, requireSpotOwner, async (req, res) => {
+router.put('/:spotId',  requireAuth, validateSpot, requireSpotOwner, async (req, res) => {
     const { spotId } = req.params;
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
@@ -417,7 +417,6 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
         include: {
             model: User,
             attributes: ['id', 'firstName', 'lastName'],
-            as: 'user'
         },
         attributes: [
             'id',
@@ -434,15 +433,15 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
     if(spot.ownerId === userId) {
         const ownerData = bookings.map(booking => ({
             User: {
-                id: booking.user.id,
-                firstName: booking.user.firstName,
-                lastName: booking.user.lastName
+                id: booking.User.id,
+                firstName: booking.User.firstName,
+                lastName: booking.User.lastName
             },
             id: booking.id,
             spotId: booking.spotId,
             userId: booking.userId,
             startDate: booking.startDate,
-            endDate: booking.endDdate,
+            endDate: booking.endDate,
             createdAt: booking.createdAt,
             updatedAt: booking.updatedAt
         }))

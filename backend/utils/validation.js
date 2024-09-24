@@ -6,9 +6,12 @@ const { Booking } = require('../db/models');
 // (to customize, see express-validator's documentation)
 const handleValidationErrors = (req, _res, next) => {
     const validationErrors = validationResult(req);
-  
     if (!validationErrors.isEmpty()) { 
       const errors = {};
+      //for specifically editting bookings, I know this isn't best practice
+      if(req.route.methods.put === true){
+        return _res.status(403).json({message: "Past bookings can't be modified"});
+      }
       validationErrors
         .array()
         .forEach(error => errors[error.path] = error.msg);
@@ -115,15 +118,16 @@ const bookingConflicts = async (req, res, next) => {
   let spotId = req.params.spotId || req.body.spotId;
   const { startDate, endDate } = req.body;
   
-
+  //if only booking id is given in params, find spotId from booking using bookingId
   if (!spotId) {
     const { bookingId } = req.params;
     const book = await Booking.findByPk(bookingId);
     spotId = book.spotId;
   }
 
+
   const newStartDate = new Date(startDate);
-  const newEndDate = new Date(endDate)
+  const newEndDate = new Date(endDate);
 
   // Check for conflicting bookings
   const existingBookings = await Booking.findAll({
@@ -135,23 +139,36 @@ const bookingConflicts = async (req, res, next) => {
   const errors = {};
 
   existingBookings.forEach(conflictingBooking => {
+    //special cases for edits
+    //does not conflict within itself
+    if(req.route.methods.put === true){
+      if(newStartDate > conflictingBooking.startDate && newEndDate < conflictingBooking.endDate){
+        console.log('\n\n\nWe will let this pass \n\n\n\n');
+        return;
+      }
+    }
+    //does not conflict surrounding
+    if(req.route.methods.put === true){
+      if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate){
+        console.log('\n\n\nWe will let this pass \n\n\n\n');
+        return;
+      }
+    }
     //if start date conflicts with existing booking
     if(newStartDate.getTime() === conflictingBooking.startDate.getTime() || newStartDate.getTime() === conflictingBooking.endDate.getTime()) {
       errors.startDate = "Start date conflicts with an existing booking";
     }
-  
-    if(newEndDate.getTime() === conflictingBooking.startDate.getTime() || newEndDate.getTime() === conflictingBooking.endDate.getTime()) {
+    else if(newEndDate.getTime() === conflictingBooking.startDate.getTime() || newEndDate.getTime() === conflictingBooking.endDate.getTime()) {
       errors.endDate = "End Date conflicts with an existing booking"
     }
-    
-    if(newStartDate >= conflictingBooking.startDate && newStartDate <= conflictingBooking.endDate){
+    else if(newStartDate >= conflictingBooking.startDate && newStartDate <= conflictingBooking.endDate){
       errors.startDate = "Start Date conflicts with an existing booking";
       
     }
-    if(newEndDate >= conflictingBooking.startDate && newEndDate <= conflictingBooking.endDate){
+    else if(newEndDate >= conflictingBooking.startDate && newEndDate <= conflictingBooking.endDate){
       errors.endDate = "End Date conflicts with an existing booking";
     }
-    if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate){
+    else if(newStartDate < conflictingBooking.startDate && newEndDate > conflictingBooking.endDate){
       errors.startDate = "Start Date conflicts with an existing booking",
       errors.endDate = "End Date conflicts with an existing booking"
     }

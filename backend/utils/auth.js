@@ -140,7 +140,7 @@ const requireBookingOwner = async (req, res, next) => {
   }
 
   if(booking.userId !== req.user.id) {
-    return res.status(403).json({message: "Forbiddy B"})
+    return res.status(403).json({message: "Forbidden"})
   }
 
   next();

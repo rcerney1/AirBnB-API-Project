@@ -1,7 +1,7 @@
 const express = require('express');
 const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
 const { requireAuth, requireSpotOwner, requireBookingOwner } = require('../../utils/auth');
-const { validateReview, validateSpot, bookingConflicts } = require('../../utils/validation');
+const { validateReview, validateSpot, bookingConflicts, validateBooking } = require('../../utils/validation');
 const { process_params } = require('express/lib/router');
 const { UPDATE } = require('sequelize/lib/query-types');
 const router = express.Router();
@@ -76,7 +76,7 @@ router.get('/current', requireAuth, async (req, res) => {
 })
 
 //Edit a booking
-router.put('/:bookingId', requireAuth, requireBookingOwner, bookingConflicts,  async (req, res) => {
+router.put('/:bookingId', requireAuth, requireBookingOwner, bookingConflicts, validateBooking, async (req, res) => {
     const { bookingId } = req.params;
     const { startDate, endDate } = req.body;
     
@@ -94,7 +94,6 @@ router.put('/:bookingId', requireAuth, requireBookingOwner, bookingConflicts,  a
     await booking.save()
 
     return res.json(booking)
-
 })
 
 //Delete a booking
