@@ -69,9 +69,6 @@ router.get('/current', requireAuth, async (req, res) => {
         createdAt: booking.createdAt,
         updatedAt: booking.updatedAt
     }))
-
-    //console.log(bookings[0].spot.dataValues.previewImage)
-
     res.json({Bookings: formattedData})
 })
 

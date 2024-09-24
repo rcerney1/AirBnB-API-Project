@@ -54,7 +54,7 @@ router.use((err, req, res, next) => {
   //User already exists with the specified email or username
   if(err.name === 'SequelizeUniqueConstraintError' && (err.errors?.[0].path === 'email' || err.errors?.[0].path === 'username')){
     const errors = {};
-    err.errors.forEach(error => {
+    err.errors.forEach(error => { 
       if (error.path === 'email'){
         errors.email = 'User with that email already exists';
       }
@@ -62,8 +62,7 @@ router.use((err, req, res, next) => {
         errors.username = 'User with that username already exists'
       }
     });
-    return res.status(500).json({message: "User already exists", errors})
-    
+    return res.status(500).json({message: "User already exists", errors}) 
   }
 
  

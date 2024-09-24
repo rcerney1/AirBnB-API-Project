@@ -123,7 +123,6 @@ const requireReviewOwner = async (req, res, next)=> {
   }
 
   if(review.userId != req.user.id) {
-    // console.log(review.userId, req.user.id, review)
     return res.status(403).json({message: "Forbidden"});
   }
 
