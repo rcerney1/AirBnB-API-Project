@@ -45,7 +45,8 @@ router.get('/', validateParameters, async (req, res)=> {
     )`;
 
     //testing
-    
+    const test = '(SELECT * FROM "Reviews")';
+'
 
     
     //find all spots
@@ -75,7 +76,8 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            [sequelize.literal(avgRatingQuery), 'avgRating'],
+            [sequelize.liter(test), 'test'],
+            //[sequelize.literal(avgRatingQuery), 'avgRating'],
             //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
         limit: size,
