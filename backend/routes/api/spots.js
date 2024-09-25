@@ -120,13 +120,6 @@ router.get('/current', requireAuth, async (req, res) => {
          WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
     )`;
 
-    // const avgRatingQuery = `(
-    //     SELECT AVG("stars") 
-    //     FROM "airbnb_schema"."Reviews" 
-    //     WHERE "airbnb_schema"."Reviews"."spotId" = "airbnb_schema"."Spots"."id"
-    // )`;
-    
-    
     //find all spots
     const spots = await Spot.findAll({
         where: {ownerId: req.user.id}, //current user
@@ -160,28 +153,15 @@ router.get('/current', requireAuth, async (req, res) => {
         ],   
     });
 
-    // //format results
-    // const formattedSpots = spots.map(spot => {
-    //     const previewImage = spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null; // Get the first image URL
-    //     return {
-    //         id: spot.id,
-    //         ownerId: spot.ownerId,
-    //         address: spot.address,
-    //         city: spot.city,
-    //         state: spot.state,
-    //         country: spot.country,
-    //         lat: spot.lat,
-    //         lng: spot.lng,
-    //         name: spot.name,
-    //         description: spot.description,
-    //         price: spot.price,
-    //         createdAt: spot.createdAt,
-    //         updatedAt: spot.updatedAt,
-    //         avgRating: spot.dataValues.avgRating ? parseFloat(spot.dataValues.avgRating).toFixed(1) : null, // Format avgRating to 1 decimal place
-    //         previewImage: previewImage,
-    //     }
-    // });
-    return res.json({Spots: spots})
+    //format results
+    const formattedSpots = spots.map(spot => {
+        const previewImage = spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null;
+        return {
+            id: spot.id,
+            avgRating: spot.dataValues.avgRating ? parseFloat(spot.dataValues.avgRating).toFixed(1) : null,
+        }
+    })
+    return res.json({Spots: formattedSpots})
 });
 
 //Get details of a Spot from an id
