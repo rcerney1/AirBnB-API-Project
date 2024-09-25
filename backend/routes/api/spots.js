@@ -163,11 +163,11 @@ router.get('/current', requireAuth, async (req, res) => {
             city: spot.city,
             state: spot.state,
             country: spot.country,
-            lat: spot.lat,
-            lng: spot.lng,
+            lat: parseFloat(spot.lat),
+            lng: parseFloat(spot.lng),
             name: spot.name,
             description: spot.description,
-            price: spot.price,
+            price: parseFloat(spot.price),
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt,
             avgRating: spot.dataValues.avgRating ? parseFloat(spot.dataValues.avgRating).toFixed(1) : null,
@@ -182,9 +182,8 @@ router.get('/:spotId', async (req, res) => {
     const { spotId } = req.params;
     
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM Reviews
-        WHERE Reviews.spotId = Spot.id
-        )`;
+        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+    )`;
     const numReviews = await Review.count({
         where: {
             spotId: spotId
@@ -229,11 +228,11 @@ router.get('/:spotId', async (req, res) => {
     });
 
     //check if spot exists or if spot belongs to current user
-    if(!spot) {
-        return res.status(404).json({
-            message: "Spot couldn't be found"
-        })
-    };
+    // if(!spot) {
+    //     return res.status(404).json({
+    //         message: "Spot couldn't be found"
+    //     })
+    // };
 
     //! create formatted object to return
     const formattedSpot = {
@@ -243,11 +242,11 @@ router.get('/:spotId', async (req, res) => {
         city: spot.city,
         state: spot.state,
         country: spot.country,
-        lat: spot.lat,
-        lng: spot.lng,
+        lat: parseFloat(spot.lat),
+        lng: parseFloat(spot.lng),
         name: spot.name,
         description: spot.description,
-        price: spot.price,
+        price: parseFloat(spot.price),
         createdAt: spot.createdAt,
         updatedAt: spot.updatedAt,
         numReviews: spot.dataValues.numReviews,
@@ -258,8 +257,6 @@ router.get('/:spotId', async (req, res) => {
             firstName: spot.User.firstName,
             lastName: spot.User.lastName
         }
-
-
     }
 
     return res.json(formattedSpot)
