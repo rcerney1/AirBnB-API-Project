@@ -60,7 +60,7 @@ router.get('/', validateParameters, async (req, res)=> {
         include: [
             {
                 model: Review,
-                attributes: [],
+                attributes: [[sequelize.fn('AVG', sequelize.col('"airbnb_schema"."Reviews"."stars"')), 'avgRating']],
                 
                
             },
@@ -83,7 +83,7 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            [sequelize.literal(avgRatingQuery2), 'avgRating'],
+            //[sequelize.literal(avgRatingQuery), 'avgRating'],
             //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
         
