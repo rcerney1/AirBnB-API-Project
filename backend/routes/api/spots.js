@@ -227,7 +227,7 @@ router.get('/:spotId', async (req, res) => {
         ]  
     });
 
-    console.log('test: ', spot.dataValues.avgRating, '\n\nparseFloat: ', parseFloat(spot.dataValues.avgRating))
+    //console.log('test: ', spot.dataValues.avgRating, '\n\nparseFloat: ', parseFloat(spot.dataValues.avgRating))
 
     //check if spot exists or if spot belongs to current user
     if(!spot) {
@@ -252,7 +252,7 @@ router.get('/:spotId', async (req, res) => {
         createdAt: spot.createdAt,
         updatedAt: spot.updatedAt,
         numReviews: spot.dataValues.numReviews,
-        avgStarRating: parseFloat(spot.dataValues.avgRating).toFixed(1),
+        avgStarRating: parseFloat(spot.dataValues.avgRating),
         SpotImages: spot.SpotImages,
         Owner: {
             id: spot.User.id,
