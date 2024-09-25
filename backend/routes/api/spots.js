@@ -57,11 +57,12 @@ router.get('/', validateParameters, async (req, res)=> {
             {
                 model: Review,
                 attributes: [[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']],
+                group: ["Spot.id"]
                
             },
             {
                 model: SpotImage,
-                attributes: []
+                attributes: ["url"]
             }
         ],
         attributes: [
