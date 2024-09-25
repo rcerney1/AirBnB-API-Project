@@ -63,6 +63,7 @@ router.get('/', validateParameters, async (req, res)=> {
             {
                 model: SpotImage,
                 attributes: ['url'],
+                limit: 1,
             }
         ],
         attributes: [
