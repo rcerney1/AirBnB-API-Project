@@ -34,21 +34,12 @@ router.get('/', validateParameters, async (req, res)=> {
      if (minPrice) filters.price = { [Op.gte]: parseFloat(minPrice) };
      if (maxPrice) filters.price = { [Op.lte]: parseFloat(maxPrice) };
 
-    //create query for preview Image to use in sequelize.literal within the attributes array
-    const previewImageQuery = `(
-        SELECT "url" 
-        FROM "airbnb_schema"."SpotImages" 
-        WHERE "airbnb_schema"."SpotImages"."spotId" = "airbnb_schema"."Spots"."id" 
-        LIMIT 1
-    )`;
         
     //create query to find average Rating to use in sequelize.literal
     const avgRatingQuery = `(
         SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
     )`;
-
-    //[sequelize.fn('AVG', sequelize.col('"airbnb_schema"."Reviews"."stars"')), 'avgRating']
-    
+   
     
     //find all spots
     const spots = await Spot.findAll({
@@ -123,15 +114,9 @@ router.get('/test', async (req, res) => {
 //Get all Spots owned by the Current User
 router.get('/current', requireAuth, async (req, res) => {
     //create query for preview Image to use in sequelize.literal within the attributes arrray
-    const previewImageQuery = `(
-        SELECT url FROM SpotImages
-        WHERE SpotImages.spotId = spot.id
-        LIMIT 1
-        )`;
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM Reviews
-        WHERE Reviews.spotId = Spot.id
-        )`;
+        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+    )`;
     
     //find all spots
     const spots = await Spot.findAll({
@@ -139,11 +124,12 @@ router.get('/current', requireAuth, async (req, res) => {
         include: [
             {
                 model: Review,
-                attributes: []
+                attributes: [],
             },
             {
                 model: SpotImage,
-                attributes: []
+                attributes: ['url'],
+                limit: 1,
             }
         ],
         attributes: [
@@ -161,11 +147,33 @@ router.get('/current', requireAuth, async (req, res) => {
             'createdAt',
             'updatedAt',
             [sequelize.literal(avgRatingQuery), 'avgRating'],
-            [sequelize.literal(previewImageQuery), 'previewImage']
-        ],
-        
-    })
-    //! possibly create a formated spots object to return, not right now though because you're tired, lazy, and gay
+            
+        ],   
+    });
+
+    // Format the results
+    const formattedSpots = spots.map(spot => {
+        const previewImage = spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null; // Get the first image URL
+        return {
+            id: spot.id,
+            ownerId: spot.ownerId,
+            address: spot.address,
+            city: spot.city,
+            state: spot.state,
+            country: spot.country,
+            lat: spot.lat,
+            lng: spot.lng,
+            name: spot.name,
+            description: spot.description,
+            price: spot.price,
+            createdAt: spot.createdAt,
+            updatedAt: spot.updatedAt,
+            avgRating: spot.dataValues.avgRating ? parseFloat(spot.dataValues.avgRating).toFixed(1) : null, // Format avgRating to 1 decimal place
+            previewImage: previewImage,
+        };
+
+
+    
     return res.json({Spots: spots})
 });
 
