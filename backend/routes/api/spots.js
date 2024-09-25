@@ -41,9 +41,12 @@ router.get('/', validateParameters, async (req, res)=> {
         )`;
     //create query to find average Rating to use in sequelize.literal
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM Reviews
-        WHERE Reviews.spotId = Spot.id
+        SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
     )`;
+
+    //testing
+    
+
     
     //find all spots
     const spots = await Spot.findAll({
@@ -72,7 +75,7 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            //[sequelize.literal(avgRatingQuery), 'avgRating'],
+            [sequelize.literal(avgRatingQuery), 'avgRating'],
             //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
         limit: size,
