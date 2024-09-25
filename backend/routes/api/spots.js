@@ -76,7 +76,7 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            [sequelize.liter(test), 'test'],
+            [sequelize.literal(test), 'test'],
             //[sequelize.literal(avgRatingQuery), 'avgRating'],
             //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
