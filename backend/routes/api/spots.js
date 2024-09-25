@@ -35,18 +35,18 @@ router.get('/', validateParameters, async (req, res)=> {
      if (maxPrice) filters.price = { [Op.lte]: parseFloat(maxPrice) };
 
     //create query for preview Image to use in sequelize.literal within the attributes array
-    const previewImageQuery = `(
-        SELECT url FROM SpotImages
-        WHERE SpotImages.spotId = spot.id
-        LIMIT 1
-        )`;
-    //create query to find average Rating to use in sequelize.literal
-    const avgRatingQuery = `(
-        SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
-    )`;
+    // const previewImageQuery = `(
+    //     SELECT url FROM SpotImages
+    //     WHERE SpotImages.spotId = spot.id
+    //     LIMIT 1
+    //     )`;
+    // //create query to find average Rating to use in sequelize.literal
+    // const avgRatingQuery = `(
+    //     SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
+    // )`;
 
-    //testing
-    const test = '(SELECT * FROM "Reviews")';
+    // //testing
+    // const test = '(SELECT * FROM "Reviews")';
 
 
     
