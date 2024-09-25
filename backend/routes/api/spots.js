@@ -250,7 +250,7 @@ router.get('/:spotId', async (req, res) => {
         createdAt: spot.createdAt,
         updatedAt: spot.updatedAt,
         numReviews: spot.dataValues.numReviews,
-        avgStarRating: spot.dataValues.avgStarRating,
+        avgRating: spot.dataValues.avgRating ? parseFloat(spot.dataValues.avgRating).toFixed(1) : null, // Format avgRating to 1 decimal place
         SpotImages: spot.SpotImages,
         Owner: {
             id: spot.User.id,
