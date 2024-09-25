@@ -36,10 +36,12 @@ router.get('/', validateParameters, async (req, res)=> {
 
     //create query for preview Image to use in sequelize.literal within the attributes array
     const previewImageQuery = `(
-        SELECT url FROM SpotImages
-        WHERE SpotImages.spotId = spot.id
+        SELECT "url" 
+        FROM "airbnb_schema"."SpotImages" 
+        WHERE "airbnb_schema"."SpotImages"."spotId" = "airbnb_schema"."Spots"."id" 
         LIMIT 1
-        )`;
+    )`;
+        
     //create query to find average Rating to use in sequelize.literal
     const avgRatingQuery = `(
         SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
@@ -78,7 +80,7 @@ router.get('/', validateParameters, async (req, res)=> {
             'createdAt',
             'updatedAt',
             [sequelize.literal(avgRatingQuery), 'avgRating'],
-            //[sequelize.literal(previewImageQuery), 'previewImage']
+            [sequelize.literal(previewImageQuery), 'previewImage']
         ],
         
         limit: size,
