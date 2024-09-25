@@ -8,11 +8,6 @@ const { handleValidationErrors, validateReview } = require('../../utils/validati
 
 //get all reviews for current user
 router.get('/current', requireAuth, async (req, res) => {
-    // const previewImageQuery = `(
-    //     SELECT url FROM SpotImages
-    //     WHERE SpotImages.spotId = spot.id
-    //     LIMIT 1
-    //     )`;
     const previewImageQuery = `(
         SELECT "url"
         FROM "airbnb_schema"."SpotImages" 
@@ -81,9 +76,6 @@ router.get('/current', requireAuth, async (req, res) => {
             ReviewImages: review.ReviewImages,
         }
     })
-
-    
-    
     return res.json({Reviews: formattedReviews}, )
 });
 

@@ -10,10 +10,11 @@ const router = express.Router();
 // Get all of the Current User's Bookings
 router.get('/current', requireAuth, async (req, res) => {
     const previewImageQuery = `(
-        SELECT url FROM SpotImages
-        WHERE SpotImages.spotId = spot.id
-        LIMIT 1
-        )`;
+        SELECT "url"
+        FROM "airbnb_schema"."SpotImages" 
+        WHERE "airbnb_schema"."SpotImages"."spotId" = "Spot"."id" LIMIT 1
+    )`;
+    
     //get all bookings for current user
     const bookings = await Booking.findAll({
         where: {userId: req.user.id},
