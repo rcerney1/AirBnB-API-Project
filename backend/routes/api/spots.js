@@ -88,11 +88,30 @@ router.get('/', validateParameters, async (req, res)=> {
         offset: (page - 1) * size,
     });
     
-    //return results w/out pagination
-    //return res.json({Spots: spots})
+      // Format the results
+      const formattedSpots = spots.map(spot => {
+        const previewImage = spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null; // Get the first image URL
+        return {
+            id: spot.id,
+            ownerId: spot.ownerId,
+            address: spot.address,
+            city: spot.city,
+            state: spot.state,
+            country: spot.country,
+            lat: spot.lat,
+            lng: spot.lng,
+            name: spot.name,
+            description: spot.description,
+            price: spot.price,
+            createdAt: spot.createdAt,
+            updatedAt: spot.updatedAt,
+            avgRating: spot.dataValues.avgRating, // Access avgRating from dataValues
+            previewImage: previewImage,
+        };
+    });
 
     //return results w/ pagination
-    return res.json({Spots: spots, page, size});
+    return res.json({Spots: formattedSpots, page, size});
 });
 
 router.get('/test', async (req, res) => {
