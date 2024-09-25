@@ -80,7 +80,7 @@ router.get('/', validateParameters, async (req, res)=> {
             'createdAt',
             'updatedAt',
             [sequelize.literal(avgRatingQuery), 'avgRating'],
-            [sequelize.literal(previewImageQuery), 'previewImage']
+            //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
         
         limit: size,
