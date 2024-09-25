@@ -44,6 +44,15 @@ router.get('/', validateParameters, async (req, res)=> {
     const avgRatingQuery = `(
         SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
     )`;
+
+    //test query
+    const avgRatingQuery2 = `
+        SELECT s.id, s.name, AVG(r.stars) AS avg_rating
+        FROM "airbnb_schema"."Spots" s
+        LEFT JOIN "airbnb_schema"."Reviews" r
+        ON s.id = r."spotId"
+        GROUP BY s.id
+    )`;
     
     //find all spots
     const spots = await Spot.findAll({
@@ -74,8 +83,8 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            [sequelize.literal(avgRatingQuery), 'avgRating'],
-            [sequelize.literal(previewImageQuery), 'previewImage']
+            [sequelize.literal(avgRatingQuery2), 'avgRating'],
+            //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
         
         limit: size,
