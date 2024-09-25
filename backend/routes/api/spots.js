@@ -46,7 +46,7 @@ router.get('/', validateParameters, async (req, res)=> {
 
     //testing
     const test = '(SELECT * FROM "Reviews")';
-'
+
 
     
     //find all spots
