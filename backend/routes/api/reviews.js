@@ -14,7 +14,9 @@ router.get('/current', requireAuth, async (req, res) => {
     //     LIMIT 1
     //     )`;
     const previewImageQuery = `(
-        SELECT "url" FROM "airbnb_schema"."SpotImages" WHERE "airbnb_schema"."SpotImages"."spotId" = "Spot"."id" LIMIT 1
+        SELECT "url"
+        FROM "airbnb_schema"."SpotImages" 
+        WHERE "airbnb_schema"."SpotImages"."spotId" = "Spot"."id" LIMIT 1
     )`;
     
 
@@ -49,9 +51,19 @@ router.get('/current', requireAuth, async (req, res) => {
         ]
     });
 
+    const formattedReviews = reviews.map(review => {
+        return {
+            id: review.id,
+            Spot : {
+                id: review.Spot.id,
+                previewImage: review.Spot.previewImage
+            }
+        }
+    })
+
     
     
-    return res.json({Reviews: reviews})
+    return res.json({Reviews: formattedReviews})
 });
 
 //Add an Image to a Review based on the Review's id
