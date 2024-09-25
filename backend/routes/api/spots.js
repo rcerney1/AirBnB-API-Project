@@ -89,7 +89,7 @@ router.get('/', validateParameters, async (req, res)=> {
             city: spot.city,
             state: spot.state,
             country: spot.country,
-            lat: parseFloagt(spot.lat),
+            lat: parseFloat(spot.lat),
             lng: parseFloat(spot.lng),
             name: spot.name,
             description: spot.description,
