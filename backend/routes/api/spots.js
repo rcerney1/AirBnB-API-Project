@@ -1,5 +1,6 @@
 const express = require('express');
-const { Op } = require('sequelize')
+const { Sequelize } = require('sequelize');
+const { Op } = require('sequelize');
 const { Spot, Review, User, SpotImage, sequelize, ReviewImage, Booking } = require('../../db/models')
 const { requireAuth, requireSpotOwner } = require('../../utils/auth');
 const { validateReview, validateSpot, validateBooking, validateParameters, bookingConflicts } = require('../../utils/validation');
