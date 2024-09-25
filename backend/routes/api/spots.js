@@ -72,8 +72,8 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            [sequelize.literal(avgRatingQuery), 'avgRating'],
-            [sequelize.literal(previewImageQuery), 'previewImage']
+            //[sequelize.literal(avgRatingQuery), 'avgRating'],
+            //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
         limit: size,
         offset: (page - 1) * size,
