@@ -228,11 +228,11 @@ router.get('/:spotId', async (req, res) => {
     });
 
     //check if spot exists or if spot belongs to current user
-    // if(!spot) {
-    //     return res.status(404).json({
-    //         message: "Spot couldn't be found"
-    //     })
-    // };
+    if(!spot) {
+        return res.status(404).json({
+            message: "Spot couldn't be found"
+        })
+    };
 
     //! create formatted object to return
     const formattedSpot = {
@@ -250,7 +250,7 @@ router.get('/:spotId', async (req, res) => {
         createdAt: spot.createdAt,
         updatedAt: spot.updatedAt,
         numReviews: spot.dataValues.numReviews,
-        avgStarRating: spot.dataValues.avgStarRating,
+        avgStarRating: parseFloat(spot.dataValues.avgStarRating.toFixed(1)),
         SpotImages: spot.SpotImages,
         Owner: {
             id: spot.User.id,
