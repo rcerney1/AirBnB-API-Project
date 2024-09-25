@@ -1,13 +1,7 @@
 const express = require('express');
 const router = require('express').Router();
-//! delete sequelize
-
-//! delete spotImage
 const { Spot, User, Review, ReviewImage, sequelize } = require('../../db/models');
 const { requireAuth, requireReviewOwner } = require('../../utils/auth');
-//! delete check 
-
-//! delete handleValidationErrors
 const { validateReview } = require('../../utils/validation');
 
 //get all reviews for current user
