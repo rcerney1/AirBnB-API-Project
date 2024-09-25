@@ -242,23 +242,23 @@ router.get('/:spotId', async (req, res) => {
         city: spot.city,
         state: spot.state,
         country: spot.country,
-        lat: parseFloat(spot.lat),
-        lng: parseFloat(spot.lng),
+        lat: spot.lat,
+        lng: spot.lng,
         name: spot.name,
         description: spot.description,
-        price: parseFloat(spot.price),
+        price: spot.price,
         createdAt: spot.createdAt,
         updatedAt: spot.updatedAt,
         numReviews: spot.dataValues.numReviews,
-        avgStarRatingTest: parseFloat(spot.dataValues.avgRating),
-        // type: (typeof spot.dataValues.avgRating),
-        avgStarRating: spot.dataValues.avgRating,
+        avgStarRating: spot.dataValues.avgStarRating,
         SpotImages: spot.SpotImages,
         Owner: {
             id: spot.User.id,
             firstName: spot.User.firstName,
             lastName: spot.User.lastName
         }
+
+
     }
 
     return res.json(formattedSpot)
