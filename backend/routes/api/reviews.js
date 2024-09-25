@@ -54,10 +54,31 @@ router.get('/current', requireAuth, async (req, res) => {
     const formattedReviews = reviews.map(review => {
         return {
             id: review.id,
+            userId: review.userId,
+            spotId: review.spotId,
+            review: review.review,
+            stars: review.stars,
+            createdAt: review.createdAt,
+            updatedAt: review.updatedAt,
+            User: {
+                id: review.User.id,
+                firstName: review.User.firstName,
+                lastName: review.User.lastName,
+            },
             Spot : {
                 id: review.Spot.id,
-                previewImage: review.Spot.previewImage
-            }
+                ownerId: review.Spot.ownerId,
+                address: review.Spot.address,
+                city: review.Spot.city,
+                state: review.Spot.state,
+                country: review.Spot.country,
+                lat: parseFloat(review.Spot.lat),
+                lng: parseFloat(review.Spot.lng),
+                name: review.Spot.name,
+                price: parseFloat(review.Spot.price),
+                previewImage: review.Spot.dataValues.previewImage,
+            },
+            ReviewImages: review.ReviewImages,
         }
     })
 
