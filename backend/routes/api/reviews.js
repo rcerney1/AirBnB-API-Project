@@ -76,7 +76,7 @@ router.get('/current', requireAuth, async (req, res) => {
                 lng: parseFloat(review.Spot.lng),
                 name: review.Spot.name,
                 price: parseFloat(review.Spot.price),
-                previewImage: review.Spot.dataValues.previewImage,
+                previewImage: review.Spot.dataValues,
             },
             ReviewImages: review.ReviewImages,
         }
@@ -84,7 +84,7 @@ router.get('/current', requireAuth, async (req, res) => {
 
     
     
-    return res.json({Reviews: formattedReviews})
+    return res.json({Reviews: formattedReviews}, )
 });
 
 //Add an Image to a Review based on the Review's id
