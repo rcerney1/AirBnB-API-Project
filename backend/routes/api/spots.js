@@ -51,50 +51,16 @@ router.get('/', validateParameters, async (req, res)=> {
     //[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']
     
     //find all spots
-    // const spots = await Spot.findAll({
-    //     where: filters,
-    //     include: [
-    //         {
-    //             model: Review,
-    //             attributes: [[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']]
-    //         },
-    //         {
-    //             model: SpotImage,
-    //             attributes: []
-    //         }
-    //     ],
-    //     attributes: [
-    //         'id',
-    //         'ownerId',
-    //         'address',
-    //         'city',
-    //         'state',
-    //         'country',
-    //         'lat',
-    //         'lng',
-    //         'name',
-    //         'description',
-    //         'price',
-    //         'createdAt',
-    //         'updatedAt',
-    //         //[sequelize.literal(test), 'test'],
-    //         //[sequelize.literal(avgRatingQuery), 'avgRating'],
-    //         //[sequelize.literal(previewImageQuery), 'previewImage']
-    //     ],
-    //     group: ['Spot.id'], // Ensure proper grouping
-    //     limit: size,
-    //     offset: (page - 1) * size,
-    // });
     const spots = await Spot.findAll({
         where: filters,
         include: [
             {
                 model: Review,
-                attributes: [], // You can keep this empty since we're handling avgRating separately
+                attributes: []
             },
             {
                 model: SpotImage,
-                attributes: ['url'], // Adjust as needed
+                attributes: []
             }
         ],
         attributes: [
@@ -111,27 +77,15 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgRating'] // Move the avgRating calculation here
+            //[sequelize.literal(test), 'test'],
+            //[sequelize.literal(avgRatingQuery), 'avgRating'],
+            //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
-        group: [
-            'Spot.id', // Include Spot.id
-            'Spot.ownerId',
-            'Spot.address',
-            'Spot.city',
-            'Spot.state',
-            'Spot.country',
-            'Spot.lat',
-            'Spot.lng',
-            'Spot.name',
-            'Spot.description',
-            'Spot.price',
-            'Spot.createdAt',
-            'Spot.updatedAt',
-            'SpotImages.url', // Include the SpotImage attributes if you're selecting them
-        ],
+        group: ['Spot.id'], // Ensure proper grouping
         limit: size,
         offset: (page - 1) * size,
     });
+    
     //return results w/out pagination
     //return res.json({Spots: spots})
 
