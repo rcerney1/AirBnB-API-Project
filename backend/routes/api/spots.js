@@ -227,6 +227,8 @@ router.get('/:spotId', async (req, res) => {
         ]  
     });
 
+    console.log('test: ', spot.dataValues.avgRating, '\n\nparseFloat: ', parseFloat(spot.dataValues.avgRating))
+
     //check if spot exists or if spot belongs to current user
     if(!spot) {
         return res.status(404).json({
