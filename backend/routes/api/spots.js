@@ -56,7 +56,7 @@ router.get('/', validateParameters, async (req, res)=> {
         include: [
             {
                 model: Review,
-                attributes: [[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']]
+                attributes: []
             },
             {
                 model: SpotImage,
