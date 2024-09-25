@@ -42,17 +42,11 @@ router.get('/', validateParameters, async (req, res)=> {
         )`;
     //create query to find average Rating to use in sequelize.literal
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
+        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
     )`;
 
-    //test query
-    const avgRatingQuery2 = `
-        SELECT s.id, s.name, AVG(r.stars) AS avg_rating
-        FROM "airbnb_schema"."Spots" s
-        LEFT JOIN "airbnb_schema"."Reviews" r
-        ON s.id = r."spotId"
-        GROUP BY s.id
-    )`;
+    //[sequelize.fn('AVG', sequelize.col('"airbnb_schema"."Reviews"."stars"')), 'avgRating']
+    
     
     //find all spots
     const spots = await Spot.findAll({
@@ -60,7 +54,7 @@ router.get('/', validateParameters, async (req, res)=> {
         include: [
             {
                 model: Review,
-                attributes: [[sequelize.fn('AVG', sequelize.col('"airbnb_schema"."Reviews"."stars"')), 'avgRating']],
+                attributes: [],
                 
                
             },
@@ -83,7 +77,7 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            //[sequelize.literal(avgRatingQuery), 'avgRating'],
+            [sequelize.literal(avgRatingQuery), 'avgRating'],
             //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
         
