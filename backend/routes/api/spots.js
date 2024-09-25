@@ -57,7 +57,7 @@ router.get('/', validateParameters, async (req, res)=> {
             {
                 model: Review,
                 attributes: [[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']],
-                group: ["Spot.id"]
+                required: false,
                
             },
             {
@@ -85,7 +85,21 @@ router.get('/', validateParameters, async (req, res)=> {
             //[sequelize.literal(avgRatingQuery), 'avgRating'],
             //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
-        //group: ['Spot.id'], // Ensure proper grouping
+        group: [
+            'Spot.id',            // Group by the spot's ID      
+            'Spot.ownerId',       // Group by all selected Spot attributes to avoid issues
+            'Spot.address',
+            'Spot.city',
+            'Spot.state',
+            'Spot.country',
+            'Spot.lat',
+            'Spot.lng',
+            'Spot.name',
+            'Spot.description',
+            'Spot.price',
+            'Spot.createdAt',
+            'Spot.updatedAt',
+          ],
         limit: size,
         offset: (page - 1) * size,
     });
