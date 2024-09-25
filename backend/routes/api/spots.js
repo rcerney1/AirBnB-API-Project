@@ -158,7 +158,20 @@ router.get('/current', requireAuth, async (req, res) => {
         const previewImage = spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null;
         return {
             id: spot.id,
+            ownerId: spot.ownerId,
+            address: spot.address,
+            city: spot.city,
+            state: spot.state,
+            country: spot.country,
+            lat: spot.lat,
+            lng: spot.lng,
+            name: spot.name,
+            description: spot.description,
+            price: spot.price,
+            createdAt: spot.createdAt,
+            updatedAt: spot.updatedAt,
             avgRating: spot.dataValues.avgRating ? parseFloat(spot.dataValues.avgRating).toFixed(1) : null,
+            previewImage: previewImage,
         }
     })
     return res.json({Spots: formattedSpots})
