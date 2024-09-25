@@ -115,8 +115,17 @@ router.get('/test', async (req, res) => {
 router.get('/current', requireAuth, async (req, res) => {
     //create query for preview Image to use in sequelize.literal within the attributes arrray
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+        SELECT AVG(stars)
+         FROM "airbnb_schema"."Reviews" 
+         WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
     )`;
+
+    // const avgRatingQuery = `(
+    //     SELECT AVG("stars") 
+    //     FROM "airbnb_schema"."Reviews" 
+    //     WHERE "airbnb_schema"."Reviews"."spotId" = "airbnb_schema"."Spots"."id"
+    // )`;
+    
     
     //find all spots
     const spots = await Spot.findAll({
@@ -125,7 +134,6 @@ router.get('/current', requireAuth, async (req, res) => {
             {
                 model: Review,
                 attributes: [],
-                limit: 1
             },
             {
                 model: SpotImage,
