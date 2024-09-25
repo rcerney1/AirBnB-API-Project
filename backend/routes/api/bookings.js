@@ -14,7 +14,7 @@ router.get('/current', requireAuth, async (req, res) => {
         FROM "airbnb_schema"."SpotImages" 
         WHERE "airbnb_schema"."SpotImages"."spotId" = "Spot"."id" LIMIT 1
     )`;
-    
+
     //get all bookings for current user
     const bookings = await Booking.findAll({
         where: {userId: req.user.id},
@@ -58,10 +58,10 @@ router.get('/current', requireAuth, async (req, res) => {
             city: booking.Spot.city,
             state: booking.Spot.state,
             country: booking.Spot.country,
-            lat: booking.Spot.lat,
-            lng: booking.Spot.lng,
+            lat: parseFloat(booking.Spot.lat),
+            lng: parseFloat(booking.Spot.lng),
             name: booking.Spot.name,
-            price: booking.Spot.price,
+            price: parseFloat(booking.Spot.price),
             previewImage: booking.Spot.dataValues.previewImage //! this took me 2 hours to figure out
         },
         userId: booking.userId,
