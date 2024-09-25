@@ -55,7 +55,7 @@ router.get('/', validateParameters, async (req, res)=> {
         include: [
             {
                 model: Review,
-                attributes: []
+                attributes: [[Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating']]
             },
             {
                 model: SpotImage,
@@ -76,7 +76,7 @@ router.get('/', validateParameters, async (req, res)=> {
             'price',
             'createdAt',
             'updatedAt',
-            [sequelize.literal(test), 'test'],
+            //[sequelize.literal(test), 'test'],
             //[sequelize.literal(avgRatingQuery), 'avgRating'],
             //[sequelize.literal(previewImageQuery), 'previewImage']
         ],
