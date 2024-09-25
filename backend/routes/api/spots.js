@@ -105,7 +105,7 @@ router.get('/', validateParameters, async (req, res)=> {
             price: spot.price,
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt,
-            avgRating: spot.dataValues.avgRating, // Access avgRating from dataValues
+            avgRating: spot.dataValues.avgRating ? parseFloat(spot.dataValues.avgRating).toFixed(1) : null, // Format avgRating to 1 decimal place
             previewImage: previewImage,
         };
     });
