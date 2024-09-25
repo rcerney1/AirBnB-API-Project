@@ -76,7 +76,7 @@ router.get('/current', requireAuth, async (req, res) => {
                 lng: parseFloat(review.Spot.lng),
                 name: review.Spot.name,
                 price: parseFloat(review.Spot.price),
-                previewImage: review.Spot.dataValues,
+                previewImage: review.Spot.dataValues.previewImage,
             },
             ReviewImages: review.ReviewImages,
         }
