@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { SpotImage, Spot } = require('../../db/models');
+//! delete spot
+const { SpotImage, } = require('../../db/models');
 const { requireAuth, requireSpotOwner } = require('../../utils/auth');
 
 
