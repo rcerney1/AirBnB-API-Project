@@ -6,26 +6,47 @@ import './LoginForm.css';
 
 function LoginFormModal() {
   const dispatch = useDispatch();
-  //const sessionUser = useSelector((state) => state.session.user);
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
 
-  // if (sessionUser){
-  //   return <Navigate to="/" replace={true} />;
-  // } 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
-    
+
     return dispatch(sessionActions.login({ credential, password }))
       .then(closeModal)
       .catch(async (res) => {
-        const data = await res.json();
+        const data = await res.json(); 
+        console.log(data);
         if (data && data.errors) {
-          setErrors(data.errors);
+          setErrors(data.message);
+        } else if (data && data.message) {
+          setErrors({ general: data.message }); // Handle a general error if applicable
+        }
+      });
+  };
+
+  // Check if the button should be disabled
+  const isButtonDisabled = credential.length < 4 || password.length < 6;
+
+  const handleDemoLogin = () => {
+    const demoUser = {
+      credential: "Demo-lition", // replace with the actual demo username/email
+      password: "password" // replace with the actual demo password
+    };
+
+    return dispatch(sessionActions.login(demoUser))
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        console.log(data);
+        if (data && data.errors) {
+          setErrors(data.message);
+        } else if (data && data.message) {
+          setErrors({ general: data.message }); // Handle a general error if applicable
         }
       });
   };
@@ -42,9 +63,7 @@ function LoginFormModal() {
             required
             placeholder="Username or Email" // Placeholder updated
           />
-        </label>
-        {errors.credential && <p className="error">{errors.credential}</p>} {/* Display credential error */}
-        
+        </label>  
         <label>
           <input
             type="password"
@@ -54,12 +73,14 @@ function LoginFormModal() {
             placeholder="Password"
           />
         </label>
-        {errors.password && <p className="error">{errors.password}</p>} {/* Display password error */}
+        {errors.general && <p className="error">The provided credentials were invalid</p>}
         
-        {errors.general && <p className="error">{errors.general}</p>} {/* Display general error message */}
-        
-        <button type="submit">Log In</button>
+        <button type="submit" disabled={isButtonDisabled}>Log In</button>
       </form>
+
+      <button onClick={handleDemoLogin} className="demo-user-button">
+        Log in as Demo User
+      </button>
     </div>
   );
 }

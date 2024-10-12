@@ -5,11 +5,16 @@ import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
 import { FaBars } from 'react-icons/fa'; // Import burger menu icon
 import * as sessionActions from '../../store/session';
+import LoginFormModal from '../LoginFormModal/LoginFormModal';
+import SignupFormModal from '../SignupFormModal/SignupFormModal';
+import OpenModalMenuItem from './OpenModalMenuItem';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+
+  
 
   const toggleMenu = (e) => {
     e.stopPropagation(); // Prevent click from bubbling up and closing the menu immediately
@@ -19,21 +24,21 @@ function ProfileButton({ user }) {
   useEffect(() => {
     if (!showMenu) return; // If the menu is not shown, do nothing
 
-    const closeMenu = (e) => {
-      // Close the menu only if the click target is not inside the dropdown
-      if (ulRef.current && !ulRef.current.contains(e.target)) {
-        setShowMenu(false);
-      }
-    };
-
     document.addEventListener('click', closeMenu); // Listen for clicks on the document
 
     return () => document.removeEventListener('click', closeMenu); // Cleanup the listener
   }, [showMenu]);
 
+  const closeMenu = () => setShowMenu(false);
+
+  const handleMenuClick = (e) => {
+    e.stopPropagation(); // Prevent the dropdown from closing when clicking inside
+  };
+
   const logout = (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     dispatch(sessionActions.logout()); // Dispatch logout action
+    closeMenu();
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden"); // Determine class for dropdown visibility
@@ -44,16 +49,36 @@ function ProfileButton({ user }) {
         <FaBars className="burger-icon" />
         <FaUserCircle />
       </button>
-      <ul className={ulClassName} ref={ulRef}>
-        <li>Username: {user.username}</li>
-        <li>Name: {user.firstName} {user.lastName}</li>
-        <li>Email: {user.email}</li>
-        <li>
-          <button onClick={logout}>Log Out</button>
-        </li>
+      <ul className={ulClassName} ref={ulRef} onClick={handleMenuClick}>
+        {user ? (
+          <>
+            <li>Hello, {user.firstName}</li>
+            <li>Email: {user.email}</li>
+            <li>
+              <button onClick={logout}>Log Out</button>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <OpenModalMenuItem 
+                itemText="Log In"
+                onButtonClick={closeMenu}
+                modalComponent={<LoginFormModal />}
+              />
+            </li>
+            <li>
+              <OpenModalMenuItem 
+                itemText="Sign up"
+                onButtonClick={closeMenu}
+                modalComponent={<SignupFormModal />}
+              />
+            </li>
+          </>
+        )}
       </ul>
     </>
-  );
+  )
 }
 
 export default ProfileButton;
