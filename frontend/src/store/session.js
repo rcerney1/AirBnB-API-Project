@@ -45,7 +45,15 @@ export const signup = (user) => async (dispatch) => {
     const data = await response.json();
     dispatch(setUser(data.user)); // Make sure to have setUser defined
     return response;
-  };
+};
+
+export const logout = () => async (dispatch) => {
+  const response = await csrfFetch('/api/session', {
+    method: 'DELETE'
+  });
+  dispatch(removeUser());
+  return response;
+};
 
 // Thunk action to restore session user
 export const restoreUser = () => async (dispatch) => {

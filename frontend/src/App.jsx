@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import LoginFormPage from './components/LoginFormPage/LoginFormPage.jsx';
-import SignupFormPage from './components/SignupFormPage/SignupFormPage.jsx'
+//import LoginFormPage from './components/LoginFormPage/LoginFormPage.jsx';
+import SignupFormPage from './components/SignupFormPage/SignupFormPage.jsx';
+import Navigation from './components/Navigation/Navigation.jsx'
 import * as sessionActions from './store/session';
 
 function Layout() {
   const dispatch = useDispatch();
+  const sessionUser = useSelector((state) => state.session.user);
   const [isLoaded, setIsLoaded] = useState(false);
+
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => {
@@ -17,7 +20,11 @@ function Layout() {
 
   return (
     <>
-      {isLoaded && <Outlet />}
+      <Navigation isLoaded={isLoaded} />
+      <div className ="main-content">
+        {isLoaded && <Outlet />}
+        <h1>Welcome, {sessionUser ? sessionUser.firstName : "Guest"}!</h1>
+      </div>
     </>
   );
 }
@@ -29,11 +36,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Welcome!</h1>
-      },
-      {
-        path: '/login',
-        element: <LoginFormPage />
+        element: null,
       },
       {
         path: '/signup',

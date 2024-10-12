@@ -20,25 +20,31 @@ app.use(express.json());
 if (!isProduction) {
     // enable cors only in development
     app.use(cors());
-  }
+}
   
-  // helmet helps set a variety of headers to better secure your app
-  app.use(
-    helmet.crossOriginResourcePolicy({
-      policy: "cross-origin"
-    })
-  );
-  
-  // Set the _csrf token and create req.csrfToken method
-  app.use(
-    csurf({
-      cookie: {
-        secure: isProduction,
-        sameSite: isProduction && "Lax",
-        httpOnly: true
-      }
-    })
-  );
+// helmet helps set a variety of headers to better secure your app
+app.use(
+  helmet.crossOriginResourcePolicy({
+    policy: "cross-origin"
+  })
+);
+
+// Set the _csrf token and create req.csrfToken method
+app.use(
+  csurf({
+    cookie: {
+      secure: isProduction,
+      sameSite: isProduction && "Lax",
+      httpOnly: true
+    }
+  })
+);
+
+// Route to get CSRF token
+app.get('/api/csrf/restore', (req, res) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken(), { httpOnly: false }); // Set this cookie so the frontend can read it
+  return res.json({ csrfToken: req.csrfToken() });
+});
 
 //Route connections
 const routes = require('./routes');

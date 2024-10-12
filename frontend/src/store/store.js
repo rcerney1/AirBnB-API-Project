@@ -15,7 +15,7 @@ if (import.meta.env.MODE === 'production') {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   enhancer = composeEnhancers(applyMiddleware(thunk, logger));
-};
+}
 
 const configureStore = (preloadedState) => {
     console.log('hi');
