@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa'; // Import burger menu icon
 import * as sessionActions from '../../store/session';
 
 function ProfileButton({ user }) {
@@ -40,6 +41,7 @@ function ProfileButton({ user }) {
   return (
     <>
       <button className="profile-button" onClick={toggleMenu}>
+        <FaBars className="burger-icon" />
         <FaUserCircle />
       </button>
       <ul className={ulClassName} ref={ulRef}>

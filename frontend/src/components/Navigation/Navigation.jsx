@@ -5,6 +5,7 @@ import OpenModalButton from '../OpenModalButton/OpenModalButton.jsx';
 import LoginFormModal from '../LoginFormModal/LoginFormModal.jsx';
 import SignupFormModal from '../SignupFormModal/SignupFormModal.jsx';
 
+
 import './Navigation.css';
 
 function Navigation({ isLoaded }) {

@@ -19,7 +19,7 @@
 body{
     margin: 0;
     height: 100vh;
-    background-image: url('../wallpaperflare.com_wallpaper.jpg');
+    /* background-image: url('../wallpaperflare.com_wallpaper.jpg'); */
     background-size: cover;
     display:flex;
     justify-content: center;
