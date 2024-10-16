@@ -33,11 +33,14 @@ router.get('/', validateParameters, async (req, res)=> {
      if (minPrice) filters.price = { [Op.gte]: parseFloat(minPrice) };
      if (maxPrice) filters.price = { [Op.lte]: parseFloat(maxPrice) };
 
-        
-    //create query to find average Rating to use in sequelize.literal
+    //!changing Query for development
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+        SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
     )`;
+    //create query to find average Rating to use in sequelize.literal
+    // const avgRatingQuery = `(
+    //     SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+    // )`;
    
     
     //find all spots
@@ -54,7 +57,7 @@ router.get('/', validateParameters, async (req, res)=> {
                 model: SpotImage,
                 attributes: ['url'],
                 limit: 1,
-            }
+            }, 
         ],
         attributes: [
             'id',
@@ -179,9 +182,10 @@ router.get('/current', requireAuth, async (req, res) => {
 //Get details of a Spot from an id
 router.get('/:spotId', async (req, res) => {
     const { spotId } = req.params;
+    // ! changed for development
     
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+        SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
     )`;
     const numReviews = await Review.count({
         where: {

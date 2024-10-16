@@ -1,2 +1,7 @@
-/* TODO: Add sitewide styles */
+
+
+.main-content {
+    margin-top: 75px; /* This should match the height of the navbar */
+}
+
 

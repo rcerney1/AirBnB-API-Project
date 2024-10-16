@@ -14,7 +14,7 @@ function Navigation({ isLoaded }) {
       <Logo />
       <ul className="nav-links">
         <li>
-          <NavLink to="/" >Home</NavLink>
+          <NavLink to="/spots/new" >Create A New Spot</NavLink>
         </li>
         {isLoaded && (
           <li>

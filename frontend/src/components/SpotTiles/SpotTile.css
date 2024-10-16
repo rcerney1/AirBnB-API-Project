@@ -1,0 +1,46 @@
+.spot-tiles-list {
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+  gap: 20px; 
+  padding: 20px; 
+  max-width: 1200px; 
+  margin: 0 auto; 
+}
+
+.spot-tile {
+  display: flex; 
+  flex-direction: column;
+  cursor: pointer; /* Pointer cursor for interactive tiles */
+}
+
+.spot-tile img {
+  width: 100%; 
+  height: 200px; 
+  object-fit: cover;
+  border: 1px solid black;
+}
+
+.spot-details {
+  display: flex; 
+  flex-direction: column;
+}
+
+.details-row {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.location {
+  font-size: 16px;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.rating {
+  font-size: 16px
+}

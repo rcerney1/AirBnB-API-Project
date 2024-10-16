@@ -16,8 +16,6 @@ function SignupFormModal() {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
 
-  //if (sessionUser) return <Navigate to="/" replace={true} />;
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
@@ -36,7 +34,7 @@ function SignupFormModal() {
         const data = await res.json();
         if (data?.errors) {
           setErrors(data.errors);
-          console.log(data.errors)
+          //console.log(data.errors)
         }
       });
     }

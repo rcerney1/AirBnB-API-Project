@@ -20,7 +20,7 @@ function LoginFormModal() {
       .then(closeModal)
       .catch(async (res) => {
         const data = await res.json(); 
-        console.log(data);
+        //console.log(data);
         if (data && data.errors) {
           setErrors(data.message);
         } else if (data && data.message) {
@@ -42,7 +42,7 @@ function LoginFormModal() {
       .then(closeModal)
       .catch(async (res) => {
         const data = await res.json();
-        console.log(data);
+        //console.log(data);
         if (data && data.errors) {
           setErrors(data.message);
         } else if (data && data.message) {
