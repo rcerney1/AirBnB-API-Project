@@ -6,6 +6,7 @@ import * as sessionActions from './store/session';
 import SpotTilesList from './components/SpotTiles/SpotTilesList.jsx';
 import SpotDetails from './components/SpotDetails/SpotDetails.jsx';
 import CreateSpotForm from './components/CreateSpotForm/CreateSpotForm.jsx';
+import ManageSpotsPage from './components/ManageSpots/ManageSpotsPage.jsx';
 import { useParams } from 'react-router-dom';
 
 
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: '/spots/new',
         element: <CreateSpotForm />
+      },
+      {
+        path: 'spots/manage',
+        element: <ManageSpotsPage/>
       }
       
     ]

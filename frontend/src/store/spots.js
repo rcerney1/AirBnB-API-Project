@@ -139,6 +139,15 @@ export const createReview = (reviewData) => async (dispatch) => {
   }
 };
 
+//thunk to fetch spots owned by current user
+export const fetchUserSpots = () => async (dispatch) => {
+  const response = await csrfFetch('/api/spots/current');
+  if(response.ok){
+    const data = await response.json();
+    dispatch(setSpots(data.Spots))
+  }
+}
+
 // Initial state
 const initialState = { allSpots: [], spotDetails: null };
 

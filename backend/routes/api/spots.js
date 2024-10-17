@@ -116,10 +116,17 @@ router.get('/test', async (req, res) => {
 //Get all Spots owned by the Current User
 router.get('/current', requireAuth, async (req, res) => {
     //create query for preview Image to use in sequelize.literal within the attributes arrray
+    //! changed for development - change back when deploying
+    // const avgRatingQuery = `(
+    //     SELECT AVG(stars)
+    //      FROM "airbnb_schema"."Reviews" 
+    //      WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+    // )`;
+
     const avgRatingQuery = `(
         SELECT AVG(stars)
-         FROM "airbnb_schema"."Reviews" 
-         WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+         FROM "Reviews" 
+         WHERE "Reviews"."spotId" = "Spot"."id"
     )`;
 
     //find all spots

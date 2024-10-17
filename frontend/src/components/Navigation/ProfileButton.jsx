@@ -8,13 +8,12 @@ import * as sessionActions from '../../store/session';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
 import SignupFormModal from '../SignupFormModal/SignupFormModal';
 import OpenModalMenuItem from './OpenModalMenuItem';
+import { NavLink } from 'react-router-dom';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
-
-  
 
   const toggleMenu = (e) => {
     e.stopPropagation(); // Prevent click from bubbling up and closing the menu immediately
@@ -54,6 +53,9 @@ function ProfileButton({ user }) {
           <>
             <li>Hello, {user.firstName}</li>
             <li>Email: {user.email}</li>
+            <li>
+              <NavLink to="/spots/manage" onClick={closeMenu}>Manage Spots</NavLink>
+            </li>
             <li>
               <button onClick={logout}>Log Out</button>
             </li>
