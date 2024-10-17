@@ -4,6 +4,11 @@ import { csrfFetch } from './csrf';
 const SET_SPOTS = "spots/setSpots";
 const SET_SPOT_DETAILS = "spots/setSpotDetails";
 const SET_SPOT_REVIEWS = "spots/setSpotReviews";
+const CLEAR_SPOT_DETAILS = "spots/clearSpotDetails";
+const CLEAR_SPOT_REVIEWS = "spots/clearSpotReviews";
+const CREATE_SPOT = "spots/createSpot";
+const ADD_SPOT_IMAGE = "spots/addSpotImage"
+const CREATE_REVIEW = "spots/createReview"
 
 // Action Creators
 const setSpots = (spots) => ({
@@ -19,6 +24,29 @@ const setSpotDetails = (spotDetails) => ({
 const setSpotReviews = (spotReviews) => ({
   type: SET_SPOT_REVIEWS,
   payload: spotReviews,
+});
+
+const createSpotAction = (spot) => ({
+  type: CREATE_SPOT,
+  payload: spot,
+});
+
+const addSpotImageAction = (image) => ({
+  type: ADD_SPOT_IMAGE,
+  image,
+})
+
+const createReviewAction = (review) => ({
+  type: CREATE_REVIEW,
+  payload: review
+})
+
+export const clearSpotDetails = () => ({
+  type: CLEAR_SPOT_DETAILS,
+});
+
+export const clearSpotReviews = () => ({
+  type: CLEAR_SPOT_REVIEWS,
 });
 
 
@@ -49,8 +77,72 @@ export const fetchSpotReviews = (spotId) => async (dispatch) => {
   }
 };
 
+//Thunk to create a new spot
+export const createSpot = (spotData) => async (dispatch) => {
+  console.log('here in the thunk')
+  const response = await csrfFetch('/api/spots', {
+    method: 'POST',
+    body: JSON.stringify(spotData),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (response.ok) {
+    const newSpot = await response.json();
+    dispatch(createSpotAction(newSpot));
+    return newSpot; // Return the newly created spot for further processing
+  } else {
+    // Handle errors (e.g., validation errors)
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to create spot');
+  }
+}
+
+// Thunk to add an image to a spot
+export const addImageToSpot = (spotId, imageData) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}/images`, {
+    method: 'POST',
+    body: JSON.stringify(imageData),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.ok) {
+    const newImage = await response.json();
+    dispatch(addSpotImageAction(newImage));
+    return newImage; // Return the newly created image for further processing if needed
+  } else {
+    // Handle errors (e.g., validation errors)
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to add image to spot');
+  }
+};
+
+// Thunk to create a review for a spot
+export const createReview = (reviewData) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${reviewData.spotId}/reviews`, {
+    method: 'POST',
+    body: JSON.stringify(reviewData),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (response.ok) {
+    const newReview = await response.json();
+    dispatch(createReviewAction(newReview));
+    return newReview; // Return the newly created review for further processing
+  } else {
+    // Handle errors (e.g., validation errors)
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to create review');
+  }
+};
+
 // Initial state
 const initialState = { allSpots: [], spotDetails: null };
+
+
 
 // Spots reducer
 const spotsReducer = (state = initialState, action) => {
@@ -59,8 +151,14 @@ const spotsReducer = (state = initialState, action) => {
       return { ...state, allSpots: action.payload };
     case SET_SPOT_DETAILS:
       return { ...state, spotDetails: action.payload };
-    case SET_SPOT_REVIEWS: // Handle the new action type
+    case SET_SPOT_REVIEWS:
       return { ...state, spotReviews: action.payload };
+    case CREATE_SPOT:
+      return { ...state, allSpots: [...state.allSpots, action.payload] };
+    case CLEAR_SPOT_DETAILS:
+      return { ...state, spotDetails: null }; // Reset spotDetails
+    case CLEAR_SPOT_REVIEWS:
+      return { ...state, spotReviews: [] }; // Reset spotReviews
     default:
       return state;
   }

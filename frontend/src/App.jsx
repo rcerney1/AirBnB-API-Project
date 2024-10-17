@@ -5,6 +5,7 @@ import Navigation from './components/Navigation/Navigation.jsx'
 import * as sessionActions from './store/session';
 import SpotTilesList from './components/SpotTiles/SpotTilesList.jsx';
 import SpotDetails from './components/SpotDetails/SpotDetails.jsx';
+import CreateSpotForm from './components/CreateSpotForm/CreateSpotForm.jsx';
 import { useParams } from 'react-router-dom';
 
 
@@ -13,6 +14,7 @@ function Layout() {
   const sessionUser = useSelector((state) => state.session.user);
   const spots = useSelector((state) => state.spots.allSpots)
   const [isLoaded, setIsLoaded] = useState(false);
+  console.log("sessionUser: ", sessionUser)
   
 
   useEffect(() => {
@@ -24,18 +26,17 @@ function Layout() {
   return (
     <>
       <div className="nav-bar">
-        <Navigation isLoaded={isLoaded} />
+        <Navigation isLoaded={isLoaded}/>
       </div>
-      <div className ="main-content">
         {isLoaded && <Outlet />}
-      </div>
     </>
   );
 }
 
 function SpotDeatailsWrapper() {
+  const sessionUser = useSelector((state) => state.session.user)
   const {spotId} = useParams();
-  return <SpotDetails spotId={spotId} />
+  return <SpotDetails spotId={spotId} user={sessionUser}/>
 }
 
 
@@ -50,7 +51,12 @@ const router = createBrowserRouter([
       {
         path: '/spots/:spotId',
         element: <SpotDeatailsWrapper />
+      },
+      {
+        path: '/spots/new',
+        element: <CreateSpotForm />
       }
+      
     ]
   }
 ]);
