@@ -148,6 +148,26 @@ export const fetchUserSpots = () => async (dispatch) => {
   }
 }
 
+//thunk to update a spot
+export const updateSpot = (spotId, spotData) => async (dispatch) => {
+  console.log("we are in the updateSpot thunk")
+  console.log("spotId: ", spotId)
+  console.log("spot Data: ", spotData)
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: 'PUT',
+    body: JSON.stringify(spotData),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.ok) {
+    const updatedSpot = await response.json();
+    dispatch(setSpotDetails(updatedSpot));
+    return updatedSpot;
+  }
+};
+
 // Initial state
 const initialState = { allSpots: [], spotDetails: null };
 

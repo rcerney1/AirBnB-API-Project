@@ -26,7 +26,8 @@ const SpotDetails = ({ spotId, user }) => {
         };
     }, [dispatch, spotId]);
 
-    if (!spotDetails || !spotReviews) return <p>Loading spot details...</p>;
+    //conditional that makes sure all appropriate data is available before rendering
+    if (!spotDetails || !spotReviews || !spotDetails.Owner ) return <p>Loading spot details...</p>;
 
     // Fallback for missing spot images
     const preview = spotDetails.SpotImages && spotDetails.SpotImages.length > 0 
@@ -34,6 +35,7 @@ const SpotDetails = ({ spotId, user }) => {
         : 'https://img.freepik.com/free-photo/3d-house-model-with-modern-architecture_23-2151004049.jpg'; // Default image URL
 
     const reviewsCount = Array.isArray(spotReviews) ? spotReviews.length : 0;
+    
     // Determine the rating to display
     const displayRating = spotDetails.avgStarRating ? spotDetails.avgStarRating : 'New';
     const imagesToDisplay = spotDetails.SpotImages ? spotDetails.SpotImages.slice(1, 5) : [];

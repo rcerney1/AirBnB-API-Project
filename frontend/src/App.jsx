@@ -7,6 +7,7 @@ import SpotTilesList from './components/SpotTiles/SpotTilesList.jsx';
 import SpotDetails from './components/SpotDetails/SpotDetails.jsx';
 import CreateSpotForm from './components/CreateSpotForm/CreateSpotForm.jsx';
 import ManageSpotsPage from './components/ManageSpots/ManageSpotsPage.jsx';
+import UpdateSpotForm from './components/UpdateSpotForm/UpdateSpotForm.jsx';
 import { useParams } from 'react-router-dom';
 
 
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: 'spots/manage',
         element: <ManageSpotsPage/>
+      },
+      {
+        path: 'spots/:spotId/edit',
+        element: <UpdateSpotForm/>
       }
       
     ]
