@@ -1,38 +1,48 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserSpots } from '../../store/spots'
+import { fetchUserSpots } from '../../store/spots';
 import SpotTile from "../SpotTiles/SpotTile";
 import { NavLink } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-
-function ManageSpotsPage(){
+function ManageSpotsPage() {
     const dispatch = useDispatch();
     const spots = useSelector(state => state.spots.allSpots);
-    const user = useSelector(state => state.session.user);
+    const [localSpots, setLocalSpots] = useState([]);
 
     useEffect(() => {
-        dispatch(fetchUserSpots())
+        dispatch(fetchUserSpots());
     }, [dispatch]);
 
-    console.log("spots, and user: ", spots, user)
+    useEffect(() => {
+        setLocalSpots(spots); // Update local state with fetched spots
+    }, [spots]);
+
+    const handleSpotDeleted = (deletedSpotId) => {
+        setLocalSpots(prevSpots => prevSpots.filter(spot => spot.id !== deletedSpotId));
+    };
 
     return (
         <div className="manage-spots-page">
-          <h1>Manage Spots</h1>
-          {spots.length > 0 ? (
-            <div className="spot-tiles-list">
-              {spots.map((spot) => (
-                <SpotTile key={spot.id} spot={spot} showActions={true} />
-              ))}
-            </div>
-          ) : (
-            <div className="no-spots-message">
-              <p>You have not posted any spots yet.</p>
-              <NavLink to="/spots/new" className="create-new-spot-link">
-                Create a New Spot
-              </NavLink>
-            </div>
-          )}
+            <h1>Manage Spots</h1>
+            {localSpots.length > 0 ? ( // Use localSpots instead of spots
+                <div className="spot-tiles-list">
+                    {localSpots.map((spot) => (
+                        <SpotTile
+                            key={spot.id}
+                            spot={spot}
+                            showActions={true}
+                            onSpotDeleted={handleSpotDeleted} // Pass callback to SpotTile
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="no-spots-message">
+                    <p>You have not posted any spots yet.</p>
+                    <NavLink to="/spots/new" className="create-new-spot-link">
+                        Create a New Spot
+                    </NavLink>
+                </div>
+            )}
         </div>
     );
 }
