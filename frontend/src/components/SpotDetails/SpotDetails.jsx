@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSpotDetails, fetchSpotReviews, clearSpotDetails, clearSpotReviews } from '../../store/spots';
+import { fetchSpotDetails, fetchSpotReviews, clearSpotDetails, clearSpotReviews, deleteReview } from '../../store/spots';
 import { useModal } from '../../context/Modal';
-import ReviewForm from '../CreateReviewModal/CreateReviewModal'; // Adjust the path to your ReviewForm component
+import DeleteReviewConfirmationModal from '../DeleteReviewConfirmationModal/DeleteReviewConfirmationModal';
+import ReviewForm from '../CreateReviewModal/CreateReviewModal';
 import './SpotDetails.css';
 
 const SpotDetails = ({ spotId, user }) => {
     const dispatch = useDispatch();
     const spotDetails = useSelector((state) => state.spots.spotDetails);
     const spotReviews = useSelector((state) => state.spots.spotReviews);
+    console.log
 
     const { setModalContent } = useModal(); // Get modal functions from context
 
@@ -17,7 +19,7 @@ const SpotDetails = ({ spotId, user }) => {
         return () => {
             dispatch(clearSpotDetails()); // Cleanup on unmount
         };
-    }, [dispatch, spotId]);
+    }, [dispatch, spotId, spotReviews]);
 
     useEffect(() => {
         dispatch(fetchSpotReviews(spotId));
@@ -35,7 +37,7 @@ const SpotDetails = ({ spotId, user }) => {
         : 'https://img.freepik.com/free-photo/3d-house-model-with-modern-architecture_23-2151004049.jpg'; // Default image URL
 
     const reviewsCount = Array.isArray(spotReviews) ? spotReviews.length : 0;
-    
+
     // Determine the rating to display
     const displayRating = spotDetails.avgStarRating ? spotDetails.avgStarRating : 'New';
     const imagesToDisplay = spotDetails.SpotImages ? spotDetails.SpotImages.slice(1, 5) : [];
@@ -57,8 +59,23 @@ const SpotDetails = ({ spotId, user }) => {
                 spotId={spotId} 
                 user={user} 
                 hasReviewed={hasReviewed} 
-                isOwner={isOwner} 
+                isOwner={isOwner}
+                onSubmit={() => {
+                    dispatch(fetchSpotReviews(spotId)); // Re-fetch the reviews after submission
+                }}
             />
+        );
+    };
+    
+
+    // Function to open the modal with DeleteReviewConfirmation
+    const openDeleteReviewModal = (reviewId) => {
+        console.log("hi")
+        setModalContent(
+          <DeleteReviewConfirmationModal
+            reviewId={reviewId}
+            onReviewDeleted={() => dispatch(deleteReview(reviewId))}
+          />
         );
     };
 
@@ -124,9 +141,18 @@ const SpotDetails = ({ spotId, user }) => {
 
                         return (
                             <div className="review-item" key={review.id}>
-                                <p className="review-author">{review.User.firstName}</p>
+                                <p className="review-author">{review.User ? review.User.firstName : user.firstName}</p>
                                 <p className="review-date">{formattedDate}</p>
                                 <p className="review-text">{review.review}</p>
+
+                                {user && user.id === review.userId && (
+                                    <button
+                                        className="delete-review-button"
+                                        onClick={() => openDeleteReviewModal(review.id)}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
                             </div>
                         );
                     })

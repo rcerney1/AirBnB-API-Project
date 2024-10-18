@@ -9,6 +9,7 @@ const CLEAR_SPOT_REVIEWS = "spots/clearSpotReviews";
 const CREATE_SPOT = "spots/createSpot";
 const ADD_SPOT_IMAGE = "spots/addSpotImage"
 const CREATE_REVIEW = "spots/createReview"
+const REMOVE_REVIEW = "spots/removeReview"
 const REMOVE_SPOT = "spots/removeSpot"
 
 // Action Creators
@@ -42,6 +43,11 @@ const createReviewAction = (review) => ({
   payload: review
 })
 
+const removeReviewAction = (reviewId) => ({
+  type: REMOVE_REVIEW,
+  reviewId,
+});
+
 export const clearSpotDetails = () => ({
   type: CLEAR_SPOT_DETAILS,
 });
@@ -55,6 +61,7 @@ const removeSpot = (spotId) => ({
   spotId
 })
 
+// Thunks
 
 // Thunk to fetch all spots
 export const fetchSpots = () => async (dispatch) => {
@@ -145,6 +152,20 @@ export const createReview = (reviewData) => async (dispatch) => {
   }
 };
 
+// Thunk to delete a review
+export const deleteReview = (reviewId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/reviews/${reviewId}`, {
+    method: 'DELETE',
+  });
+
+  if (response.ok) {
+    dispatch(removeReviewAction(reviewId)); // Dispatch removeReview action on success
+  } else {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to delete review');
+  }
+};
+
 //thunk to fetch spots owned by current user
 export const fetchUserSpots = () => async (dispatch) => {
   const response = await csrfFetch('/api/spots/current');
@@ -186,7 +207,7 @@ export const deleteSpot = (spotId) => async (dispatch) => {
 };
 
 // Initial state
-const initialState = { allSpots: [], spotDetails: null };
+const initialState = { allSpots: [], spotDetails: null, spotReviews: []};
 
 
 
@@ -201,6 +222,11 @@ const spotsReducer = (state = initialState, action) => {
       return { ...state, spotReviews: action.payload };
     case CREATE_SPOT:
       return { ...state, allSpots: [...state.allSpots, action.payload] };
+    case CREATE_REVIEW:
+      return {
+        ...state,
+        spotReviews: [...state.spotReviews, action.payload] // Add the new review to spotReviews
+      };
     case CLEAR_SPOT_DETAILS:
       return { ...state, spotDetails: null }; // Reset spotDetails
     case CLEAR_SPOT_REVIEWS:
@@ -210,6 +236,11 @@ const spotsReducer = (state = initialState, action) => {
         ...state,
         allSpots: state.allSpots.filter(spot => spot.id !== action.spotId),
         spotDetails: state.spotDetails?.id === action.spotId ? null : state.spotDetails 
+      };
+    case REMOVE_REVIEW:
+      return {
+        ...state,
+        spotReviews: state.spotReviews.filter((review) => review.id !== action.reviewId),
       };
     default:
       return state;
