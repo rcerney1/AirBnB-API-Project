@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserSpots } from '../../store/spots';
 import SpotTile from "../SpotTiles/SpotTile";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function ManageSpotsPage() {
@@ -25,7 +25,7 @@ function ManageSpotsPage() {
         <div className="manage-spots-page">
             <h1>Manage Spots</h1>
             {localSpots.length > 0 ? ( // Use localSpots instead of spots
-                <div className="spot-tiles-list">
+                <div data-testid='user-spots'className="spot-tiles-list">
                     {localSpots.map((spot) => (
                         <SpotTile
                             key={spot.id}
@@ -38,9 +38,11 @@ function ManageSpotsPage() {
             ) : (
                 <div className="no-spots-message">
                     <p>You have not posted any spots yet.</p>
-                    <NavLink to="/spots/new" className="create-new-spot-link">
+                    <button>
+                    <Link to="/spots/new" className="create-new-spot-link">
                         Create a New Spot
-                    </NavLink>
+                    </Link>
+                    </button>
                 </div>
             )}
         </div>

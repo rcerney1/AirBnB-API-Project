@@ -14,15 +14,13 @@ function DeleteReviewConfirmationModal({ reviewId, onReviewDeleted }) {
   };
 
   return (
-    <div className="delete-confirmation-modal">
-      <h2>Confirm Delete</h2>
+    <div data-testid='delete-review-modal'className="delete-confirmation-modal">
+      <h2 role="heading">Confirm Delete</h2>
       <p>Are you sure you want to delete this review?</p>
-      <button className="delete-confirm-button" onClick={handleDelete}>
+      <button data-testid="confirm-delete-button" className="delete-confirm-button" onClick={handleDelete}>
         Yes (Delete Review)
       </button>
-      <button className="delete-cancel-button" onClick={closeModal}>
-        No (Keep Review)
-      </button>
+      <button className="delete-cancel-button" onClick={closeModal}>No (Keep Review)</button>
     </div>
   );
 }

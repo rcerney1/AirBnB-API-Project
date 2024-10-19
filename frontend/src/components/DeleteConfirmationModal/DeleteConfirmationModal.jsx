@@ -16,7 +16,7 @@ function DeleteConfirmationModal({spotId}){
     };
 
     return (
-        <div className="delete-confirmation-modal">
+        <div data-testid='delete-spot-modal' className="delete-confirmation-modal">
             <h2>Confirm Delete</h2>
             <p>Are you sure you want to remove this spot?</p>
             <button

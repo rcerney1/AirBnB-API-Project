@@ -15,6 +15,7 @@
     border-bottom: 2px solid #ccc;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
 }
 
 
@@ -72,19 +73,19 @@
 
 .profile-dropdown {
     position: absolute;
-    top: 100%; 
-    right: 0; 
-    background: white;
+    right: 10px; /* Aligns it to the right */
+    top: 50px; /* Adjusts distance from the top */
+    background-color: white;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    z-index: 1000; 
-}
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensures it is above other elements */
+  }
 
 .profile-dropdown li {
     list-style: none;
     padding: 8px 12px;
+    margin-top: 10px;
     cursor: pointer;
     color: #333;
 }
@@ -102,3 +103,5 @@
 .profile-dropdown button:hover {
     background: #cc0000; 
 }
+
+

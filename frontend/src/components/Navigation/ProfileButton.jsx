@@ -48,13 +48,15 @@ function ProfileButton({ user }) {
         <FaBars className="burger-icon" />
         <FaUserCircle />
       </button>
-      <ul className={ulClassName} ref={ulRef} onClick={handleMenuClick}>
+      <ul className={ulClassName} data-testid='user-dropdown-menu' ref={ulRef} onClick={handleMenuClick}>
         {user ? (
           <>
-            <li>Hello, {user.firstName}</li>
+            <li>
+              {user.email === "demo@user.io" ? "Hello, Demo" : `Hello, ${user.firstName}`}
+            </li>
             <li>Email: {user.email}</li>
             <li>
-              <NavLink to="/spots/manage" onClick={closeMenu}>Manage Spots</NavLink>
+              <NavLink data-testid='manage-spots-link'to="/spots/current" onClick={closeMenu} className='manage-spots-nav-link'>Manage Spots</NavLink>
             </li>
             <li>
               <button onClick={logout}>Log Out</button>

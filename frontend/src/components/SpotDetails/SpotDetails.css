@@ -122,9 +122,15 @@ p{
 }
 
 .review-header {
+    display:flex;
+    align-items: center;
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 20px;
+}
+
+.review-rating, .review-count {
+    margin: 0 5px;
 }
 
 .review-item {

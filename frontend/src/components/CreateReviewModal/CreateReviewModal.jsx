@@ -42,7 +42,7 @@ function ReviewForm({ spotId, user, hasReviewed, isOwner }) {
     if (isOwner || hasReviewed || !user) return null;
 
     return (
-        <div className="review-modal-container">
+        <div data-testid='review-modal' className="review-modal-container">
             <h2>How was your stay?</h2>
             <form onSubmit={handleSubmit}>
                 {serverError && <p className="error">{serverError}</p>}
@@ -61,6 +61,8 @@ function ReviewForm({ spotId, user, hasReviewed, isOwner }) {
                                 value={star}
                                 checked={stars === star}
                                 onChange={() => setStars(star)}
+                                data-testid='review-star-clickable'
+                                className='review-star-clickable'
                             />
                             {star} ⭐
                         </span>

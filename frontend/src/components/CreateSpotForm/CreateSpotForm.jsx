@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createSpot } from '../../store/spots'; // Import your createSpot action
-import { addImageToSpot } from '../../store/spots'; // Import your addImageToSpot action
+import { createSpot, addImageToSpot } from '../../store/spots';
 import { useNavigate } from 'react-router-dom';
 import './CreateSpotForm.css';
 
 const CreateSpotForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Use useNavigate hook
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     country: '',
     address: '',
@@ -17,15 +16,15 @@ const CreateSpotForm = () => {
     description: '',
     price: '',
     previewImage: '',
-    images: ['', '', '', ''], // Array for additional image URLs
+    images: ['', '', '', ''],
   });
 
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, dataset } = e.target;
     if (name === 'images') {
-      const index = e.target.dataset.index;
+      const index = dataset.index;
       const newImages = [...formData.images];
       newImages[index] = value;
       setFormData({ ...formData, images: newImages });
@@ -40,13 +39,11 @@ const CreateSpotForm = () => {
     if (!formData.address) validationErrors.address = "Street Address is required";
     if (!formData.city) validationErrors.city = "City is required";
     if (!formData.state) validationErrors.state = "State is required";
-    if (!formData.name) validationErrors.name = "Name of your spot is required";
+    if (!formData.name) validationErrors.name = "Name is required";
     if (!formData.price) validationErrors.price = "Price per night is required";
     if (formData.description.length < 30) validationErrors.description = "Description needs 30 or more characters";
     if (!formData.previewImage) validationErrors.previewImage = "Preview Image URL is required";
 
-   
-    
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
   };
@@ -55,9 +52,8 @@ const CreateSpotForm = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // Dispatch the action to create a new spot
     const newSpot = await dispatch(createSpot({
-      ownerId: 1, // Replace with the actual owner ID from your auth context
+      ownerId: 1,
       country: formData.country,
       address: formData.address,
       city: formData.city,
@@ -70,73 +66,69 @@ const CreateSpotForm = () => {
     }));
 
     if (newSpot) {
-      // Add the preview image first
       await dispatch(addImageToSpot(newSpot.id, { url: formData.previewImage, preview: true }));
-      
-      // Add additional images
       for (let imageUrl of formData.images) {
         if (imageUrl) {
           await dispatch(addImageToSpot(newSpot.id, { url: imageUrl, preview: false }));
         }
       }
-      
-      // Navigate to the new spot's detail page after successful creation
       navigate(`/spots/${newSpot.id}`);
     }
   };
 
   return (
-    <form className="create-spot-form" onSubmit={handleSubmit}>
-      <h2>Create a New Spot</h2>
-      
-      <div>
-        <h3>Where's your place located?</h3>
-        <p>Guests will only get your exact address once they booked a reservation.</p>
-        <label>
+    <form data-testid="create-spot-form" className="create-spot-form" onSubmit={handleSubmit}>
+      <h2 data-testid="form-title">Create a New Spot</h2>
+
+      <div data-testid="section-1">
+        <h3 data-testid="section-1-heading">Where's your place located?</h3>
+        <p data-testid="section-1-caption">Guests will only get your exact address once they booked a reservation.</p>
+        <label> Country
           <input
             type="text"
             name="country"
             value={formData.country}
             onChange={handleChange}
-            placeholder='Country'
+            placeholder="Country"
+            data-testid="country-input"
           />
           {errors.country && <span className="error">{errors.country}</span>}
         </label>
-        <label>
+        <label> Street Address
           <input
             type="text"
             name="address"
             value={formData.address}
             onChange={handleChange}
-            placeholder='Street Address'
+            placeholder="Street Address"
           />
           {errors.address && <span className="error">{errors.address}</span>}
         </label>
-        <label>
+        <label> City
           <input
             type="text"
             name="city"
             value={formData.city}
             onChange={handleChange}
-            placeholder='City'
+            placeholder="City"
           />
           {errors.city && <span className="error">{errors.city}</span>}
         </label>
-        <label>
+        <label>State
           <input
             type="text"
             name="state"
             value={formData.state}
             onChange={handleChange}
-            placeholder='State'
+            placeholder="State"
           />
           {errors.state && <span className="error">{errors.state}</span>}
         </label>
       </div>
 
-      <div>
-        <h3>Describe your place to guests</h3>
-        <p>Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</p>
+      <div data-testid="section-2">
+        <h3 data-testid="section-2-heading">Describe your place to guests</h3>
+        <p data-testid="section-2-caption">Mention the best features of your space, any special amenities like fast wifi or parking, and what you love about the neighborhood.</p>
         <textarea
           name="description"
           value={formData.description}
@@ -146,9 +138,9 @@ const CreateSpotForm = () => {
         {errors.description && <span className="error">{errors.description}</span>}
       </div>
 
-      <div>
-        <h3>Create a title for your spot</h3>
-        <p>Catch guests' attention with a spot title that highlights what makes your place special.</p>
+      <div data-testid="section-3">
+        <h3 data-testid="section-3-heading">Create a title for your spot</h3>
+        <p data-testid="section-3-caption">Catch guests' attention with a spot title that highlights what makes your place special.</p>
         <input
           type="text"
           name="name"
@@ -159,9 +151,9 @@ const CreateSpotForm = () => {
         {errors.name && <span className="error">{errors.name}</span>}
       </div>
 
-      <div>
-        <h3>Set a base price for your spot</h3>
-        <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
+      <div data-testid="section-4">
+        <h3 data-testid="section-4-heading">Set a base price for your spot</h3>
+        <p data-testid="section-4-caption">Competitive pricing can help your listing stand out and rank higher in search results.</p>
         <input
           type="number"
           name="price"
@@ -172,37 +164,34 @@ const CreateSpotForm = () => {
         {errors.price && <span className="error">{errors.price}</span>}
       </div>
 
-      <div>
-        <h3>Liven up your spot with photos</h3>
-        <p>Submit a link to at least one photo to publish your spot.</p>
+      <div data-testid="section-5">
+        <h3 data-testid="section-5-heading">Liven up your spot with photos</h3>
+        <p data-testid="section-5-caption">Submit a link to at least one photo to publish your spot.</p>
         <label>
           <input
-            type="text"
+            type="url"
             name="previewImage"
             value={formData.previewImage}
             onChange={handleChange}
-            placeholder='Preview Image URL'
+            placeholder="Preview Image URL"
           />
           {errors.previewImage && <span className="error">{errors.previewImage}</span>}
         </label>
         {formData.images.map((image, index) => (
           <label key={index}>
             <input
-              type="text"
+              type="url"
               name="images"
               data-index={index}
               value={image}
               onChange={handleChange}
-              placeholder='Image URL'
+              placeholder="Image URL"
             />
-            
           </label>
         ))}
       </div>
 
-      <button type="submit">
-        Create Spot
-      </button>
+      <button type="submit">Create Spot</button>
     </form>
   );
 };

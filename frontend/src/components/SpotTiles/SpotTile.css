@@ -18,8 +18,10 @@
   height: 200px; 
   object-fit: cover;
   border: 1px solid black;
-  margin-bottom: 5px;;
+  margin-bottom: 5px;
 }
+
+
 
 .spot-details {
   display: flex; 

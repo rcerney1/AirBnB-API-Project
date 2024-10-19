@@ -31,7 +31,7 @@ const SpotTile = ({ spot, showActions, onSpotDeleted }) => {
     };
 
     // Determine the rating to display
-    const displayRating = spot.avgRating ? spot.avgRating : 'New';
+    const displayRating = spot.avgRating ? parseFloat(spot.avgRating).toFixed(1) : 'New';
 
     return (
         <div className="spot-tile" onClick={handleTileClick} title={spot.name} data-testid='spot-tile'>
@@ -44,22 +44,23 @@ const SpotTile = ({ spot, showActions, onSpotDeleted }) => {
                 <div className="spot-details">
                     <div className="details-row">
                         <div className="location" data-testid='spot-city'>{spot.city}, {spot.state}</div>
-                        <div className="rating" data-testid='spot-rating'>⭐ {displayRating}</div>
+                        <div className="rating" data-testid='spot-rating'>{displayRating} ⭐</div>
                     </div>
                     <div className="details-row">
                         <div className="price" data-testid='spot-price'>${spot.price} / night</div>
                     </div>
             
                     {/* Conditionally render Update/Delete buttons */}
-                    {showActions && (
+                    
+                </div>
+            <div className='tooltip' data-testid="spot-tooltip">{spot.name}</div>
+           </Link>
+           {showActions && (
                         <div className="actions-row">
                             <button className="update-button" onClick={handleUpdateClick}>Update</button>
                             <button className="delete-button" onClick={handleDeleteClick}>Delete</button>
                         </div>
                     )}
-                </div>
-            <div className='tooltip' data-testid="spot-tooltip">{spot.name}</div>
-           </Link>
         </div>
     );
 };

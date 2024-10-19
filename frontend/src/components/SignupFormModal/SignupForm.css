@@ -1,73 +1,97 @@
-/* frontend/src/components/SignupFormPage/SignupForm.css */
-
-* {
-    box-sizing: border-box;
-}
-
+/* Container styling for Sign-Up Modal */
+/* Updated container styling for centering the modal vertically */
 .signup-form-container {
-    max-width: 800px;
-    width: 400px;
+    max-width: 400px;
+    width: 100%;
     min-height: 600px;
-    margin: 50px auto; 
-    padding: 40px; 
-    border: 1px solid #e0e0e0; 
-    border-radius: 8px; 
-    background-color: #ffffff; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    padding: 40px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Ensures it appears above all elements */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    margin: 0; /* Ensure no margin offset */
 }
 
-body{
-    margin: 0;
-    height: 100vh;
-    
-    background-size: cover;
-    display:flex;
-    justify-content: center;
-    align-items: center;
+
+/* Styling for the form title */
+.signup-form-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
 }
 
-h1 {
-    font-family: Arial, Helvetica, sans-serif; 
-    font-size: 28px; 
-    text-align: center; 
-    color: #333; 
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input {
+/* Styling for input fields */
+.signup-form-container input {
     width: 100%;
     padding: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
+    outline: none;
+    transition: border 0.3s ease;
 }
 
-input:focus {
-    border-color: #007BFF; 
-    outline: none; 
+.signup-form-container input:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
 }
 
-p {
-    color: red;
-    font-size: 1rem;
+/* Styling for error messages */
+.error {
+    color: #d9534f; /* Red for error messages */
+    font-size: 0.875rem;
+    margin-top: -8px;
+    margin-bottom: 8px;
 }
 
-button {
+/* Styling for the Sign-Up button */
+.signup-form-container button {
     width: 100%;
     padding: 12px;
-    background-color: rgb(82, 82, 247);
+    margin-top: 16px;
+    background-color: #007BFF;
     color: white;
-    font-size: 1rem;
     border: none;
     border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button:hover {
-    background-color: rgb(51, 51, 245);
+.signup-form-container button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.signup-form-container button:not(:disabled):hover {
+    background-color: #0056b3;
+}
+
+.signup-form-container button:not(:disabled):active {
+    transform: scale(0.98);
+}
+
+/* Responsive design adjustments */
+@media (max-width: 600px) {
+    .signup-form-container {
+        padding: 20px;
+    }
+
+    .signup-form-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .signup-form-container input,
+    .signup-form-container button {
+        padding: 10px;
+    }
 }
