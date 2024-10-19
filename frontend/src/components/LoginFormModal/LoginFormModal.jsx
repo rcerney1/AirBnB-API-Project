@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as sessionActions from '../../store/session';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import './LoginForm.css';
 
@@ -10,7 +10,7 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
-
+  const user = useSelector((state) => state.session.user);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,41 +19,42 @@ function LoginFormModal() {
     return dispatch(sessionActions.login({ credential, password }))
       .then(closeModal)
       .catch(async (res) => {
-        const data = await res.json(); 
-        //console.log(data);
+        const data = await res.json();
         if (data && data.errors) {
           setErrors(data.message);
         } else if (data && data.message) {
-          setErrors({ general: data.message }); // Handle a general error if applicable
+          setErrors({ general: data.message });
         }
       });
   };
 
-  // Check if the button should be disabled
   const isButtonDisabled = credential.length < 4 || password.length < 6;
 
   const handleDemoLogin = () => {
     const demoUser = {
-      credential: "Demo-lition", // replace with the actual demo username/email
-      password: "password" // replace with the actual demo password
+      credential: "Demo-lition",
+      password: "password"
     };
 
     return dispatch(sessionActions.login(demoUser))
       .then(closeModal)
       .catch(async (res) => {
         const data = await res.json();
-        //console.log(data);
         if (data && data.errors) {
           setErrors(data.message);
         } else if (data && data.message) {
-          setErrors({ general: data.message }); // Handle a general error if applicable
+          setErrors({ general: data.message });
         }
       });
   };
 
+  // Return null if user is logged in
+  if (user) return null;
+
   return (
-    <div className="login-form-container">
-      <h1>Log In</h1>
+    <div className="login-form-container" data-testid="login-modal">
+      {/* Conditionally hide the heading */}
+      <h1 className={user ? 'visually-hidden' : ''}>Log In</h1>
       <form onSubmit={handleSubmit}>
         <label>
           <input
@@ -61,9 +62,10 @@ function LoginFormModal() {
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
-            placeholder="Username or Email" // Placeholder updated
+            placeholder="Username or Email"
+            data-testid="credential-input"
           />
-        </label>  
+        </label>
         <label>
           <input
             type="password"
@@ -71,11 +73,14 @@ function LoginFormModal() {
             onChange={(e) => setPassword(e.target.value)}
             required
             placeholder="Password"
+            data-testid="password-input"
           />
         </label>
         {errors.general && <p className="error">The provided credentials were invalid</p>}
-        
-        <button type="submit" disabled={isButtonDisabled}>Log In</button>
+
+        <button data-testid="login-button" type="submit" disabled={isButtonDisabled}>
+          Log in
+        </button>
       </form>
 
       <button onClick={handleDemoLogin} className="demo-user-button">

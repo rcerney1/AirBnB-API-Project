@@ -86,7 +86,7 @@ const CreateSpotForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="create-spot-form" onSubmit={handleSubmit}>
       <h2>Create a New Spot</h2>
       
       <div>

@@ -18,9 +18,9 @@ const SpotTilesList = () => {
   }
 
   return (
-    <div className="spot-tiles-list">
+    <div className="spot-tiles-list" data-testid='spots-list'>
       {spots.map((spot) => (
-        <SpotTile key={spot.id} spot={spot} />
+        <SpotTile key={spot.id} spot={spot} data/>
       ))}
     </div>
   );

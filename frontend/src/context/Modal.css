@@ -1,42 +1,28 @@
-@keyframes modalFadeIn {
-    0% {
-      opacity: 0; 
-      transform: scale(0.8); 
-    }
-    100% {
-      opacity: 1; 
-      transform: scale(1); 
-    }
-}
-
 #modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-  
-#modal-background {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-}
-  
-#modal-content {
-    position: absolute;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    transform: scale(0.8);
-    animation: modalFadeIn 0.3s forwards;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-  
+#modal-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+#modal-content {
+  position: relative;
+  background-color: white;
+  border-radius: 8px;
+  width: 400px; 
+  max-width: 90%; 
+  max-height: 90%; 
+}

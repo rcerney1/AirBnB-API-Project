@@ -44,7 +44,7 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button className="profile-button" onClick={toggleMenu}>
+      <button data-testid="user-menu-button" className="profile-button" onClick={toggleMenu}>
         <FaBars className="burger-icon" />
         <FaUserCircle />
       </button>

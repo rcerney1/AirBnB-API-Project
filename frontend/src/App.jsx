@@ -16,9 +16,7 @@ function Layout() {
   const sessionUser = useSelector((state) => state.session.user);
   const spots = useSelector((state) => state.spots.allSpots)
   const [isLoaded, setIsLoaded] = useState(false);
-  console.log("sessionUser: ", sessionUser)
   
-
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => {
       setIsLoaded(true)
@@ -26,12 +24,14 @@ function Layout() {
   }, [dispatch]);
 
   return (
-    <>
+    <div className='content'>
       <div className="nav-bar">
         <Navigation isLoaded={isLoaded}/>
       </div>
+      <div className="main-container">
         {isLoaded && <Outlet />}
-    </>
+      </div>
+    </div>
   );
 }
 

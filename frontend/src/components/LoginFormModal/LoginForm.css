@@ -7,11 +7,9 @@
     width: 400px;
     min-height: 600px;
     margin: 50px auto; 
-    padding: 40px; 
-    border: 1px solid #e0e0e0; 
+    padding: 40px;  
     border-radius: 8px; 
-    background-color: #ffffff; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff;   
 }
 
 body{
@@ -90,4 +88,17 @@ button:disabled {
 .demo-user-button{
   margin-top: 10px;
 }
+
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
   
