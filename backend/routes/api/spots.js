@@ -43,7 +43,7 @@ router.get('/', validateParameters, async (req, res)=> {
         SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
     )`;
    
-    
+    //anything
     //find all spots
     const spots = await Spot.findAll({
         where: filters,
