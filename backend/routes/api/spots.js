@@ -50,9 +50,7 @@ router.get('/', validateParameters, async (req, res)=> {
         include: [
             {
                 model: Review,
-                attributes: [],
-                
-               
+                attributes: [],  
             },
             {
                 model: SpotImage,
