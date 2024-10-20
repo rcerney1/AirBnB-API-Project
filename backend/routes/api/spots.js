@@ -34,13 +34,13 @@ router.get('/', validateParameters, async (req, res)=> {
      if (maxPrice) filters.price = { [Op.lte]: parseFloat(maxPrice) };
 
     //!changing Query for development
-    // const avgRatingQuery = `(
-    //     SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
-    // )`;
-    //create query to find average Rating to use in sequelize.literal
     const avgRatingQuery = `(
-        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+        SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
     )`;
+    //create query to find average Rating to use in sequelize.literal
+    // const avgRatingQuery = `(
+    //     SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
+    // )`;
    
     
     //find all spots
@@ -117,17 +117,17 @@ router.get('/test', async (req, res) => {
 router.get('/current', requireAuth, async (req, res) => {
     //create query for preview Image to use in sequelize.literal within the attributes arrray
     //! changed for development - change back when deploying
-    const avgRatingQuery = `(
-        SELECT AVG(stars)
-         FROM "airbnb_schema"."Reviews" 
-         WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
-    )`;
-
     // const avgRatingQuery = `(
     //     SELECT AVG(stars)
-    //      FROM "Reviews" 
-    //      WHERE "Reviews"."spotId" = "Spot"."id"
+    //      FROM "airbnb_schema"."Reviews" 
+    //      WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
     // )`;
+
+    const avgRatingQuery = `(
+        SELECT AVG(stars)
+         FROM "Reviews" 
+         WHERE "Reviews"."spotId" = "Spot"."id"
+    )`;
 
     //find all spots
     const spots = await Spot.findAll({
@@ -190,13 +190,13 @@ router.get('/current', requireAuth, async (req, res) => {
 router.get('/:spotId', async (req, res) => {
     const { spotId } = req.params;
     // ! changed for development
-    const avgRatingQuery = `(
-        SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
-    )`;
-    
     // const avgRatingQuery = `(
-    //     SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
+    //     SELECT AVG(stars) FROM "airbnb_schema"."Reviews" WHERE "airbnb_schema"."Reviews"."spotId" = "Spot"."id"
     // )`;
+
+    const avgRatingQuery = `(
+        SELECT AVG(stars) FROM "Reviews" WHERE "Reviews"."spotId" = "Spot"."id"
+    )`;
     const numReviews = await Review.count({
         where: {
             spotId: spotId
