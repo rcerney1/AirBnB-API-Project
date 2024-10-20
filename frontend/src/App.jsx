@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom';
 
 
 function Layout() {
-  console.log("testing testing testing test")
+  console.log("test to see if it comes up in deployment")
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.session.user);
   const spots = useSelector((state) => state.spots.allSpots)
