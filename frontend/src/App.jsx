@@ -14,8 +14,8 @@ import { useParams } from 'react-router-dom';
 function Layout() {
   console.log("test to see if it comes up in deployment")
   const dispatch = useDispatch();
-  const sessionUser = useSelector((state) => state.session.user);
-  const spots = useSelector((state) => state.spots.allSpots)
+  // const sessionUser = useSelector((state) => state.session.user);
+  // const spots = useSelector((state) => state.spots.allSpots)
   const [isLoaded, setIsLoaded] = useState(false);
   
   useEffect(() => {

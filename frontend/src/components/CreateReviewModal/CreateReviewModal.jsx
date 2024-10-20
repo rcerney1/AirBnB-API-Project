@@ -31,7 +31,7 @@ function ReviewForm({ spotId, user, hasReviewed, isOwner }) {
         try {
             await dispatch(createReview(reviewData));
             closeModal();
-            if (onSubmit) onSubmit();
+            // if (onSubmit) onSubmit();
         } catch (error) {
             setServerError('An error occurred while submitting your review. Please try again.');
         }

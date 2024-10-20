@@ -103,7 +103,7 @@ function UpdateSpotForm() {
             <h2>Update your Spot</h2>
 
             <div>
-                <h3>Where's your place located?</h3>
+                <h3>Where&apos;s your place located?</h3>
                 <p>Guests will only get your exact address once they booked a reservation.</p>
                 <label>
                     <input
@@ -163,7 +163,7 @@ function UpdateSpotForm() {
 
             <div>
                 <h3>Create a title for your spot</h3>
-                <p>Catch guests' attention with a spot title that highlights what makes your place special.</p>
+                <p>Catch guests&apos; attention with a spot title that highlights what makes your place special.</p>
                 <label>
                     <input
                         type="text"

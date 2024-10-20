@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserSpots } from '../../store/spots';
 import SpotTile from "../SpotTiles/SpotTile";
-import { NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function ManageSpotsPage() {

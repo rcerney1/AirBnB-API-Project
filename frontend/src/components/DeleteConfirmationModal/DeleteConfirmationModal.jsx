@@ -10,9 +10,9 @@ function DeleteConfirmationModal({spotId}){
     const handleDelete = async () => {
         await dispatch(deleteSpot(spotId));
         closeModal();
-        if (onSpotDeleted) {
-            onSpotDeleted(spotId);
-        }
+        // if (onSpotDeleted) {
+        //     onSpotDeleted(spotId);
+        // }
     };
 
     return (

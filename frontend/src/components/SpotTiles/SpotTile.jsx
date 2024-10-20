@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/Modal';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';

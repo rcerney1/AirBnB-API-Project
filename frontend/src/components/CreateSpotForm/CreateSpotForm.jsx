@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createSpot, addImageToSpot } from '../../store/spots';
 import { useNavigate } from 'react-router-dom';
@@ -81,7 +81,7 @@ const CreateSpotForm = () => {
       <h2 data-testid="form-title">Create a New Spot</h2>
 
       <div data-testid="section-1">
-        <h3 data-testid="section-1-heading">Where's your place located?</h3>
+        <h3 data-testid="section-1-heading">Where&apos;s your place located?</h3>
         <p data-testid="section-1-caption">Guests will only get your exact address once they booked a reservation.</p>
         <label> Country
           <input
@@ -140,7 +140,7 @@ const CreateSpotForm = () => {
 
       <div data-testid="section-3">
         <h3 data-testid="section-3-heading">Create a title for your spot</h3>
-        <p data-testid="section-3-caption">Catch guests' attention with a spot title that highlights what makes your place special.</p>
+        <p data-testid="section-3-caption">Catch guests&apos; attention with a spot title that highlights what makes your place special.</p>
         <input
           type="text"
           name="name"
