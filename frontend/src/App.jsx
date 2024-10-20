@@ -44,7 +44,7 @@ function SpotDeatailsWrapper() {
 
 const router = createBrowserRouter([
   {
-    element: <Layout />,
+    element: <Layout/>,
     children: [
       {
         path: '/',
