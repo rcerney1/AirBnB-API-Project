@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchSpotDetails, updateSpot } from '../../store/spots';
+import './UpdateSpotForm.css'
 
 function UpdateSpotForm() {
     const dispatch = useDispatch();
@@ -99,13 +100,14 @@ function UpdateSpotForm() {
         //Title changed to Update your Spot
         //Submit button text changed to Update your spot
     return (
-        <form onSubmit={handleSubmit} className="spot-form-container">
+        <form onSubmit={handleSubmit} className="update-spot-form">
             <h2>Update your Spot</h2>
 
             <div>
                 <h3>Where&apos;s your place located?</h3>
                 <p>Guests will only get your exact address once they booked a reservation.</p>
                 <label>
+                    {errors.country && <span className="error"> {errors.country}</span>}
                     <input
                         type="text"
                         name="country"
@@ -113,9 +115,9 @@ function UpdateSpotForm() {
                         onChange={handleChange}
                         placeholder="Country"
                     />
-                    {errors.country && <span className="error">{errors.country}</span>}
                 </label>
                 <label>
+                    {errors.address && <span className="error"> {errors.address}</span>}
                     <input
                         type="text"
                         name="address"
@@ -123,28 +125,30 @@ function UpdateSpotForm() {
                         onChange={handleChange}
                         placeholder="Street Address"
                     />
-                    {errors.address && <span className="error">{errors.address}</span>}
                 </label>
-                <label>
-                    <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleChange}
-                        placeholder="City"
-                    />
-                    {errors.city && <span className="error">{errors.city}</span>}
-                </label>
-                <label>
-                    <input
-                        type="text"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleChange}
-                        placeholder="State"
-                    />
-                    {errors.state && <span className="error">{errors.state}</span>}
-                </label>
+                <div className='city-state-container'>
+                    <label>
+                        {errors.city && <span className="error"> {errors.city}</span>}
+                        <input
+                            type="text"
+                            name="city"
+                            value={formData.city}
+                            onChange={handleChange}
+                            placeholder="City"
+                        />
+                    </label>
+                    <label>
+                        {errors.state && <span className="error"> {errors.state}</span>}
+                        <input
+                            type="text"
+                            name="state"
+                            value={formData.state}
+                            onChange={handleChange}
+                            placeholder="State"
+                        />    
+                    </label>
+                </div>
+                
             </div>
 
             <div>

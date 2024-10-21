@@ -151,7 +151,7 @@ const SpotDetails = ({ spotId, user }) => {
 
                             return (
                                 <div data-testid='review-item' className="review-item" key={review.id}>
-                                    <p className="review-author">{review.User ? review.User.firstName : "user.firstName"}</p>
+                                    <p className="review-author">{review.User ? review.User.firstName : user.firstName}</p>
                                     <p data-testid='review-date' className="review-date">{formattedDate}</p>
                                     <p data-testid='review-text' className="review-text">{review.review}</p>
 

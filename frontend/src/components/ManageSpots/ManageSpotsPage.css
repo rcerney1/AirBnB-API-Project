@@ -1,0 +1,19 @@
+.manage-spots-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: left;
+    margin-left: 16rem;
+    margin-bottom: 20px;
+}
+
+.no-spots-message {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.create-new-spot-link {
+    text-decoration: none;
+    color: white;
+}
+
+

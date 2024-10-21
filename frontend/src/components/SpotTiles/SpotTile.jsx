@@ -6,11 +6,14 @@ import './SpotTile.css';
 const SpotTile = ({ spot, showActions, onSpotDeleted }) => {
     const navigate = useNavigate();
     const { setModalContent } = useModal();
+    
 
     // Function to handle clicking the tile to navigate to the spot's detail page
     const handleTileClick = () => {
         navigate(`/spots/${spot.id}`);
     };
+
+    
 
     // Function to handle the update button click
     const handleUpdateClick = (e) => {
@@ -43,19 +46,16 @@ const SpotTile = ({ spot, showActions, onSpotDeleted }) => {
                 <div className="spot-details">
                     <div className="details-row">
                         <div className="location" data-testid='spot-city'>{spot.city}, {spot.state}</div>
-                        <div className="rating" data-testid='spot-rating'>{displayRating} ⭐</div>
+                        <div className="rating" data-testid='spot-rating'>⭐ {displayRating}</div>
                     </div>
                     <div className="details-row">
                         <div className="price" data-testid='spot-price'>${spot.price} / night</div>
-                    </div>
-            
-                    {/* Conditionally render Update/Delete buttons */}
-                    
+                    </div>    
                 </div>
-            <div className='tooltip' data-testid="spot-tooltip">{spot.name}</div>
+            {/* <div className='tooltip' data-testid="spot-tooltip">{spot.name}</div> */}
            </Link>
            {showActions && (
-                        <div className="actions-row">
+                        <div className="manage-spot-buttons-container">
                             <button className="update-button" onClick={handleUpdateClick}>Update</button>
                             <button className="delete-button" onClick={handleDeleteClick}>Delete</button>
                         </div>

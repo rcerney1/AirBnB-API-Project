@@ -6,15 +6,14 @@
         "image-gallery image-gallery"
         "host-description callout"
         "reviews reviews";
-    grid-template-columns: 2fr 1fr; /* 2:1 ratio between left content and callout box */
-    gap: 20px; /* Space between the grid items */
+    grid-template-columns: 2fr 1fr; 
+    gap: 20px; 
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: 600px;
 }
 
-/* Spot Name and Location */
+
 .spot-header {
     grid-area: header;
 }
@@ -152,5 +151,9 @@ p{
 }
 
 .post-review-button-container{
+    width: 12rem;
+}
+
+.delete-review-button{
     width: 12rem;
 }

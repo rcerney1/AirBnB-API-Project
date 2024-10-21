@@ -40,9 +40,10 @@ const CreateSpotForm = () => {
     if (!formData.city) validationErrors.city = "City is required";
     if (!formData.state) validationErrors.state = "State is required";
     if (!formData.name) validationErrors.name = "Name is required";
-    if (!formData.price) validationErrors.price = "Price per night is required";
+    if (!formData.price) validationErrors.price = "Price is required";
     if (formData.description.length < 30) validationErrors.description = "Description needs 30 or more characters";
     if (!formData.previewImage) validationErrors.previewImage = "Preview Image URL is required";
+    
 
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
@@ -84,6 +85,7 @@ const CreateSpotForm = () => {
         <h3 data-testid="section-1-heading">Where&apos;s your place located?</h3>
         <p data-testid="section-1-caption">Guests will only get your exact address once they booked a reservation.</p>
         <label> Country
+          {errors.country && <span className="error"> {errors.country}</span>}
           <input
             type="text"
             name="country"
@@ -92,9 +94,9 @@ const CreateSpotForm = () => {
             placeholder="Country"
             data-testid="country-input"
           />
-          {errors.country && <span className="error">{errors.country}</span>}
         </label>
         <label> Street Address
+          {errors.address && <span className="error"> {errors.address}</span>}
           <input
             type="text"
             name="address"
@@ -102,28 +104,32 @@ const CreateSpotForm = () => {
             onChange={handleChange}
             placeholder="Street Address"
           />
-          {errors.address && <span className="error">{errors.address}</span>}
+         
         </label>
-        <label> City
-          <input
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            placeholder="City"
-          />
-          {errors.city && <span className="error">{errors.city}</span>}
-        </label>
-        <label>State
-          <input
-            type="text"
-            name="state"
-            value={formData.state}
-            onChange={handleChange}
-            placeholder="State"
-          />
-          {errors.state && <span className="error">{errors.state}</span>}
-        </label>
+        <div className='city-state-container'>
+
+          <label> City
+            {errors.city && <span className="error"> {errors.city}</span>}
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              placeholder="City"
+            />
+          </label>
+          <label>State  
+            {errors.state && <span className="error"> {errors.state}</span>}
+            <input
+              type="text"
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+              placeholder="State"
+            /> 
+          </label>
+        </div>
+       
       </div>
 
       <div data-testid="section-2">

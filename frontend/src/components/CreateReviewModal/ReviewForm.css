@@ -22,14 +22,30 @@
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+    
 }
 
 .star-rating span {
     margin: 0 5px;
     cursor: pointer;
+    font-size: 24px; 
+    color: #ccc; 
 }
 
 button:disabled {
     background-color: #ddd;
     cursor: not-allowed;
+}
+
+.star-rating span:hover,
+.star-rating span:hover ~ .star-rating span {
+    color: #ccc; /* Reset color for stars to the right */
+}
+
+.star-rating .selected {
+    color: #000000; /* Color for selected stars */
+}
+
+.star-rating span.filled {
+    color: #000000; /* Color for selected or filled stars */
 }

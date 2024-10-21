@@ -1,35 +1,34 @@
-.create-spot-form {
+.update-spot-form {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-  }
-    
-  .create-spot-form input,
-  .create-spot-form textarea {
+}
+
+.update-spot-form input,
+.update-spot-form textarea {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-  }
-  
-  .create-spot-form .error {
+}
+
+.update-spot-form .error {
     color: red;
     font-size: 16px;
     margin-top: 5px;
-  }
-  
-  .city-state-container {
+}
+
+.city-state-container {
     display: flex;
     gap: 20px; 
-  }
-  
-  .city-state-container label {
+}
+
+.city-state-container label {
     flex: 1; 
-  }
-  
-  .city-state-container input {
+}
+
+.city-state-container input {
     width: 100%;
-  }
-  
+}
